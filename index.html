@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>费用预算看板 - 原型图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #f5f6f8; color: #1f2329; font-size: 14px; }
+
+  /* Top Nav */
+  .top-nav { background: #fff; height: 48px; border-bottom: 1px solid #e5e6eb; display: flex; align-items: center; padding: 0 16px; position: fixed; top: 0; left: 0; right: 0; z-index: 200; }
+  .top-nav-logo { display: flex; align-items: center; gap: 8px; margin-right: 24px; }
+  .top-nav-logo svg { width: 24px; height: 24px; }
+  .top-nav-logo span { font-size: 16px; font-weight: 600; color: #3370ff; }
+  .top-nav-items { display: flex; align-items: center; gap: 4px; }
+  .top-nav-item { padding: 6px 14px; font-size: 14px; color: #646a73; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+  .top-nav-item:hover { background: #f5f6f8; }
+  .top-nav-item.active { color: #3370ff; font-weight: 500; }
+  .top-nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .top-nav-search { padding: 5px 12px; border: 1px solid #e5e6eb; border-radius: 6px; font-size: 12px; color: #8f959e; width: 200px; background: #f7f8fa; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: #3370ff; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+  /* Sidebar */
+  .sidebar { width: 180px; background: #fff; border-right: 1px solid #e5e6eb; position: fixed; top: 48px; left: 0; bottom: 0; overflow-y: auto; z-index: 100; padding: 8px 0; }
+  .sidebar-section { padding: 8px 12px 4px; }
+  .sidebar-section-title { font-size: 13px; font-weight: 600; color: #1f2329; display: flex; align-items: center; gap: 6px; padding: 6px 8px; }
+  .sidebar-section-title svg { flex-shrink: 0; }
+  .sidebar-item { display: flex; align-items: center; gap: 6px; padding: 7px 8px 7px 32px; font-size: 13px; color: #646a73; border-radius: 6px; cursor: pointer; margin: 1px 8px; transition: all 0.15s; }
+  .sidebar-item:hover { background: #f5f6f8; color: #1f2329; }
+  .sidebar-item.active { background: #f0f4ff; color: #3370ff; font-weight: 500; }
+  .sidebar-divider { height: 1px; background: #f0f1f5; margin: 8px 12px; }
+
+  /* Layout */
+  .page-body { margin-left: 180px; margin-top: 48px; }
+  .page-header { background: #fff; padding: 16px 24px; border-bottom: 1px solid #e5e6eb; }
+  .page-header h1 { font-size: 18px; font-weight: 600; }
+  .main { padding: 20px 24px; }
+
+  /* Filter Area */
+  .filter-area { background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .filter-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .filter-group { display: flex; align-items: center; gap: 6px; }
+  .filter-label { font-size: 13px; color: #646a73; white-space: nowrap; }
+  .year-tabs { display: flex; gap: 0; }
+  .year-tab { padding: 6px 16px; border: 1px solid #d0d3d6; background: #fff; cursor: pointer; font-size: 13px; color: #646a73; transition: all 0.2s; }
+  .year-tab:first-child { border-radius: 6px 0 0 6px; }
+  .year-tab:last-child { border-radius: 0 6px 6px 0; }
+  .year-tab + .year-tab { border-left: none; }
+  .year-tab.active { background: #3370ff; color: #fff; border-color: #3370ff; }
+  .filter-select { padding: 6px 12px; border: 1px solid #d0d3d6; border-radius: 6px; font-size: 13px; color: #1f2329; background: #fff; min-width: 160px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%23646a73' fill='none' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 28px; }
+  .filter-input { padding: 6px 12px; border: 1px solid #d0d3d6; border-radius: 6px; font-size: 13px; min-width: 160px; }
+  .filter-input::placeholder { color: #bbb; }
+  .btn { padding: 6px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-primary { background: #3370ff; color: #fff; }
+  .btn-primary:hover { background: #245bdb; }
+  .btn-default { background: #fff; color: #646a73; border: 1px solid #d0d3d6; }
+  .btn-default:hover { border-color: #3370ff; color: #3370ff; }
+
+  /* Summary Cards */
+  .summary-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+  .summary-card { background: #fff; border-radius: 8px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); position: relative; overflow: hidden; }
+  .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .summary-card:nth-child(1)::before { background: #34c759; }
+  .summary-card:nth-child(2)::before { background: #3370ff; }
+  .summary-card:nth-child(3)::before { background: #ff9500; }
+  .summary-card:nth-child(4)::before { background: #5856d6; }
+  .summary-card:nth-child(5)::before { background: #00c7be; }
+  .card-title { font-size: 12px; color: #8f959e; margin-bottom: 8px; }
+  .card-value { font-size: 22px; font-weight: 600; color: #1f2329; }
+  .card-sub { font-size: 11px; color: #8f959e; margin-top: 6px; }
+  .card-sub span { margin-right: 12px; }
+  .progress-bar { height: 6px; background: #f0f1f5; border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+  /* Content Tabs */
+  .content-area { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .content-tabs { display: flex; border-bottom: 1px solid #e5e6eb; padding: 0 20px; }
+  .content-tab { padding: 14px 20px; font-size: 14px; color: #646a73; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; position: relative; }
+  .content-tab:hover { color: #3370ff; }
+  .content-tab.active { color: #3370ff; font-weight: 500; border-bottom-color: #3370ff; }
+  .tab-badge { background: #ff4d4f; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 8px; position: absolute; top: 8px; right: 4px; }
+
+  /* Table Toolbar */
+  .table-toolbar { padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f1f5; }
+  .toolbar-left { display: flex; align-items: center; gap: 8px; }
+  .toolbar-right { display: flex; align-items: center; gap: 8px; }
+  .col-group-tag { padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; border: 1px solid #e5e6eb; background: #fff; transition: all 0.2s; }
+  .col-group-tag.active { background: #f0f4ff; border-color: #3370ff; color: #3370ff; }
+  .toggle-label { font-size: 12px; color: #646a73; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .toggle-switch { width: 32px; height: 18px; background: #d0d3d6; border-radius: 9px; position: relative; display: inline-block; transition: all 0.2s; }
+  .toggle-switch::after { content: ''; position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: all 0.2s; }
+  .toggle-switch.on { background: #3370ff; }
+  .toggle-switch.on::after { left: 16px; }
+
+  /* Table */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: #f7f8fa; padding: 10px 12px; text-align: left; font-weight: 500; color: #646a73; border-bottom: 1px solid #e5e6eb; white-space: nowrap; position: sticky; top: 0; vertical-align: middle; }
+  thead th[rowspan] { vertical-align: middle; border-bottom: 1px solid #e5e6eb; border-right: 1px solid #e5e6eb; }
+  thead th.group-header { background: #f0f4ff; color: #3370ff; text-align: center; border-left: 2px solid #3370ff; border-bottom: 1px solid #d6e4ff; font-size: 12px; }
+  thead th.group-header-green { background: #f0fff4; color: #34c759; text-align: center; border-left: 2px solid #34c759; border-bottom: 1px solid #c3f0d0; font-size: 12px; }
+  thead th.group-header-orange { background: #fff8f0; color: #ff9500; text-align: center; border-left: 2px solid #ff9500; border-bottom: 1px solid #ffe0b2; font-size: 12px; }
+  thead th.group-header-purple { background: #f5f0ff; color: #5856d6; text-align: center; border-left: 2px solid #5856d6; border-bottom: 1px solid #d9d0f5; font-size: 12px; }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid #f0f1f5; white-space: nowrap; }
+  tbody tr:hover { background: #f7f8fa; }
+  tbody tr.row-summary { background: #fafbfc; font-weight: 600; }
+  tbody tr.row-summary td { border-bottom: 2px solid #e5e6eb; }
+  tbody tr.row-expand { background: #f7f8fa; }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .text-negative { color: #ff4d4f; font-weight: 500; }
+  .text-positive { color: #34c759; }
+  .text-muted { color: #8f959e; }
+
+  /* Status Tags */
+  .status-tag { padding: 2px 8px; border-radius: 4px; font-size: 11px; display: inline-block; }
+  .status-active { background: #f0fff4; color: #34c759; }
+  .status-inactive { background: #f5f5f5; color: #8f959e; }
+
+  /* Expand icon */
+  .expand-icon { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; transition: all 0.2s; margin-right: 4px; }
+  .expand-icon:hover { background: #e5e6eb; }
+  .expand-icon svg { transition: transform 0.2s; }
+  .expand-icon.expanded svg { transform: rotate(90deg); }
+
+  /* Mini progress */
+  .mini-progress { display: inline-flex; align-items: center; gap: 6px; }
+  .mini-progress-bar { width: 60px; height: 6px; background: #f0f1f5; border-radius: 3px; overflow: hidden; }
+  .mini-progress-fill { height: 100%; border-radius: 3px; }
+
+  /* Trend */
+  .trend-up { color: #ff4d4f; }
+  .trend-down { color: #34c759; }
+  .trend-flat { color: #8f959e; }
+
+  /* Change type tags */
+  .change-join { background: #f0f4ff; color: #3370ff; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .change-leave { background: #fff2f0; color: #ff4d4f; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .change-transfer { background: #fff8e6; color: #d48806; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+
+  /* Pagination */
+  .pagination { padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f0f1f5; }
+  .page-info { font-size: 12px; color: #8f959e; }
+  .page-btns { display: flex; gap: 4px; }
+  .page-btn { width: 28px; height: 28px; border: 1px solid #d0d3d6; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; background: #fff; }
+  .page-btn.active { background: #3370ff; color: #fff; border-color: #3370ff; }
+  .page-btn:hover:not(.active) { border-color: #3370ff; color: #3370ff; }
+
+  /* Tab Panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Tooltip */
+  .tooltip-trigger { position: relative; cursor: help; border-bottom: 1px dashed #8f959e; }
+  .tooltip-trigger:hover .tooltip-content { display: block; }
+  .tooltip-content { display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1f2329; color: #fff; padding: 8px 12px; border-radius: 6px; font-size: 12px; white-space: nowrap; z-index: 10; margin-bottom: 6px; }
+  .tooltip-content::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #1f2329; }
+
+  /* Person detail sub-table */
+  .sub-table-row { display: none; }
+  .sub-table-row.visible { display: table-row; }
+  .sub-table-row td { padding: 0; }
+  .sub-table { width: 100%; background: #fafbfc; }
+  .sub-table td { padding: 8px 12px 8px 48px; font-size: 12px; color: #646a73; border-bottom: 1px solid #f0f1f5; }
+
+  /* Date range filter for Tab3 */
+  .inline-filter { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fafbfc; border-bottom: 1px solid #f0f1f5; }
+  .inline-filter label { font-size: 12px; color: #646a73; }
+  .date-input { padding: 4px 10px; border: 1px solid #d0d3d6; border-radius: 4px; font-size: 12px; width: 120px; }
+
+  /* Budget Rules Panel */
+  .rules-panel { background: #fff; border-radius: 8px; padding: 0; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+  .rules-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; cursor: pointer; user-select: none; }
+  .rules-header:hover { background: #fafbfc; }
+  .rules-title { font-size: 14px; font-weight: 500; color: #1f2329; display: flex; align-items: center; gap: 8px; }
+  .rules-title-icon { width: 20px; height: 20px; background: #ff9500; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+  .rules-toggle { font-size: 12px; color: #8f959e; display: flex; align-items: center; gap: 4px; }
+  .rules-toggle svg { transition: transform 0.2s; }
+  .rules-toggle.collapsed svg { transform: rotate(-90deg); }
+  .rules-body { border-top: 1px solid #f0f1f5; }
+  .rules-body.hidden { display: none; }
+  .rules-content { display: flex; gap: 0; }
+  .rules-alert { background: #fffbe6; border-left: 3px solid #faad14; padding: 12px 16px; margin: 12px 20px; border-radius: 4px; font-size: 13px; color: #8b6914; line-height: 1.8; }
+  .rules-alert strong { color: #d48806; }
+  .rules-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0 20px 16px; }
+  .rules-section { padding: 12px 16px; }
+  .rules-section-title { font-size: 13px; font-weight: 600; color: #1f2329; margin-bottom: 8px; }
+  .rules-section ul { list-style: none; padding: 0; }
+  .rules-section li { font-size: 12px; color: #646a73; line-height: 2; padding-left: 12px; position: relative; }
+  .rules-section li::before { content: ''; position: absolute; left: 0; top: 11px; width: 4px; height: 4px; border-radius: 50%; background: #d0d3d6; }
+  .rules-link { color: #3370ff; text-decoration: none; font-size: 12px; }
+  .rules-link:hover { text-decoration: underline; }
+
+  /* Search Select Dropdown */
+  .dept-opt { padding: 8px 16px; font-size: 13px; cursor: pointer; color: #1f2329; transition: background 0.15s; }
+  .dept-opt:hover { background: #f5f6f8; }
+  .dept-opt.selected { color: #3370ff; background: #f0f4ff; }
+  .dept-opt.hidden { display: none; }
+
+  /* Page sections */
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
+  /* Budget Planning Table */
+  .planning-table { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+  .btn-text { background: none; border: none; color: #3370ff; padding: 4px 8px; font-size: 13px; cursor: pointer; }
+  .btn-text:hover { background: #f0f4ff; border-radius: 4px; }
+  .btn-danger-text { background: none; border: none; color: #ff4d4f; padding: 4px 8px; font-size: 13px; cursor: pointer; }
+  .btn-danger-text:hover { background: #fff2f0; border-radius: 4px; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); z-index: 300; align-items: center; justify-content: center; }
+  .modal-overlay.visible { display: flex; }
+  .modal { background: #fff; border-radius: 12px; width: 680px; max-height: 85vh; overflow-y: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.15); }
+  .modal-header { padding: 20px 24px 16px; border-bottom: 1px solid #f0f1f5; display: flex; align-items: center; justify-content: space-between; }
+  .modal-header h2 { font-size: 16px; font-weight: 600; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #8f959e; font-size: 18px; }
+  .modal-close:hover { background: #f5f6f8; }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid #f0f1f5; display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* Form */
+  .form-group { display: flex; align-items: flex-start; margin-bottom: 20px; }
+  .form-label { width: 120px; flex-shrink: 0; font-size: 13px; color: #646a73; padding-top: 7px; text-align: right; padding-right: 12px; }
+  .form-label .required { color: #ff4d4f; margin-right: 2px; }
+  .form-control { flex: 1; }
+  .form-input { width: 100%; padding: 7px 12px; border: 1px solid #d0d3d6; border-radius: 6px; font-size: 13px; color: #1f2329; }
+  .form-input:focus { outline: none; border-color: #3370ff; }
+  .form-input.disabled { background: #f7f8fa; color: #8f959e; cursor: not-allowed; border-color: #e5e6eb; }
+  .form-select { width: 100%; padding: 7px 12px; border: 1px solid #d0d3d6; border-radius: 6px; font-size: 13px; color: #1f2329; background: #fff; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%23646a73' fill='none' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; cursor: pointer; transition: border-color 0.2s; }
+  .form-select:focus { outline: none; border-color: #3370ff; box-shadow: 0 0 0 2px rgba(51,112,255,0.1); }
+  .form-select-modal { width: 100%; padding: 7px 12px; border: 1px solid #d0d3d6; border-radius: 6px; font-size: 13px; color: #1f2329; background: #fff; }
+  .form-select-modal.disabled { background: #f7f8fa; color: #8f959e; cursor: not-allowed; }
+  .form-hint { font-size: 12px; color: #8f959e; margin-top: 4px; }
+  .form-suffix { display: flex; align-items: center; }
+  .form-suffix .form-input { border-radius: 6px 0 0 6px; }
+  .form-suffix-text { padding: 7px 12px; background: #f7f8fa; border: 1px solid #d0d3d6; border-left: none; border-radius: 0 6px 6px 0; font-size: 13px; color: #646a73; white-space: nowrap; }
+  .form-section { margin-bottom: 16px; }
+  .form-section-title { font-size: 13px; font-weight: 600; color: #8f959e; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f0f1f5; display: flex; align-items: center; gap: 6px; }
+  .form-section-title svg { flex-shrink: 0; }
+  .form-divider { height: 8px; background: #f5f6f8; margin: 0 -24px; }
+  .form-static-row { display: flex; align-items: flex-start; margin-bottom: 12px; }
+  .form-static-label { width: 120px; flex-shrink: 0; font-size: 13px; color: #8f959e; text-align: right; padding-right: 12px; }
+  .form-static-value { font-size: 13px; color: #1f2329; }
+
+  /* Responsive hint */
+  @media (max-width: 1200px) {
+    .summary-cards { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-nav">
+  <div class="top-nav-logo">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#3370ff"/><path d="M8 12l3 3 5-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>WePortal</span>
+  </div>
+  <div class="top-nav-items">
+    <div class="top-nav-item">工作台</div>
+    <div class="top-nav-item active">审批中心</div>
+  </div>
+  <div class="top-nav-right">
+    <input class="top-nav-search" type="text" placeholder="搜索产品/文档/数据..." readonly>
+    <div class="avatar">孙</div>
+  </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#3370ff" stroke-width="1.5"/><path d="M5 8h6M8 5v6" stroke="#3370ff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      费控
+    </div>
+  </div>
+  <div class="sidebar-item">申请管理</div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title" style="cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="#646a73" stroke-width="1.5"/><path d="M2 6h12" stroke="#646a73" stroke-width="1.5"/></svg>
+      费用管理
+    </div>
+  </div>
+  <div class="sidebar-item">费用使用单</div>
+  <div class="sidebar-item">用户退款单</div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title" style="cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#3370ff" stroke-width="1.5"/><path d="M5 6h6M5 8h4M5 10h5" stroke="#3370ff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span style="color:#3370ff;">预算管理</span>
+    </div>
+  </div>
+  <div class="sidebar-item" onclick="switchPage('planning', this)">预算编制</div>
+  <div class="sidebar-item active" onclick="switchPage('report', this)">预算报表</div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title" style="cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="#646a73" stroke-width="1.5"/><path d="M8 5.5v3l2 1.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+      开发工具
+    </div>
+  </div>
+</div>
+
+<!-- Page Body -->
+<div class="page-body">
+  <!-- Page: 预算报表 -->
+  <div class="page-section active" id="page-report">
+  <div class="page-header">
+    <h1>预算报表</h1>
+  </div>
+  <div class="main">
+
+  <!-- Filter Area -->
+  <div class="filter-area">
+    <div class="filter-row">
+      <div class="filter-group">
+        <span class="filter-label">年份:</span>
+        <div class="year-tabs">
+          <div class="year-tab" onclick="switchYear(this)">2025</div>
+          <div class="year-tab active" onclick="switchYear(this)">2026</div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">预算科目:</span>
+        <select class="filter-select" id="budgetSubject">
+          <option selected>福利费-员工团建预算 (150)</option>
+          <option>福利费-海外节日预算 (75)</option>
+        </select>
+      </div>
+      <div class="filter-group" style="position:relative;">
+        <span class="filter-label">部门:</span>
+        <div class="search-select" style="position:relative; min-width:200px;">
+          <div class="filter-select" id="deptTrigger" onclick="toggleDeptDropdown()" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+            <span id="deptValue">全部部门</span>
+          </div>
+          <div class="dept-dropdown" id="deptDropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:280px; background:#fff; border:1px solid #d0d3d6; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.12); z-index:100;">
+            <div style="padding:8px 12px; border-bottom:1px solid #f0f1f5;">
+              <div style="display:flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid #d0d3d6; border-radius:6px; background:#fff;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#8f959e" stroke-width="1.5"/><path d="M9.5 9.5L12.5 12.5" stroke="#8f959e" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <input type="text" id="deptSearchInput" placeholder="搜索" oninput="filterDeptOptions()" style="border:none; outline:none; font-size:13px; width:100%; background:transparent;">
+              </div>
+            </div>
+            <div id="deptOptionsList" style="max-height:240px; overflow-y:auto; padding:4px 0;">
+              <div class="dept-opt selected" onmousedown="selectDept('全部部门', this)">全部部门</div>
+              <div class="dept-opt" onmousedown="selectDept('25届夏令营', this)">25届夏令营</div>
+              <div class="dept-opt" onmousedown="selectDept('42 项目组', this)">42 项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('社交游戏项目组', this)">社交游戏项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('人力资源', this)">人力资源</div>
+              <div class="dept-opt" onmousedown="selectDept('青藤之恋项目组', this)">青藤之恋项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('贪吃蛇项目组', this)">贪吃蛇项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('财务', this)">财务</div>
+              <div class="dept-opt" onmousedown="selectDept('财务&法务&游戏出版', this)">财务&amp;法务&amp;游戏出版</div>
+              <div class="dept-opt" onmousedown="selectDept('采购', this)">采购</div>
+              <div class="dept-opt" onmousedown="selectDept('测试支持团队', this)">测试支持团队</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">人员:</span>
+        <input class="filter-input" type="text" placeholder="搜索姓名...">
+      </div>
+      <div class="filter-group">
+        <button class="btn btn-primary">查询</button>
+        <button class="btn btn-default">重置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="card-title">上年结转预算</div>
+      <div class="card-value">&#165;125,000</div>
+      <div class="card-sub">
+        <span>已使用 &#165;125,000</span>
+        <span>剩余 &#165;0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 100%; background: #34c759;"></div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="card-title">本年预算总金额</div>
+      <div class="card-value">&#165;3,601,050</div>
+      <div class="card-sub">
+        <span>已发放 &#165;1,215,450</span>
+        <span>未发放 &#165;2,385,600</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 33.7%; background: #3370ff;"></div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="card-title">累计已使用</div>
+      <div class="card-value">&#165;1,315,450</div>
+      <div class="card-sub">
+        <span>结转已使用 &#165;125,000</span>
+        <span>本年已使用 &#165;1,190,450</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 35.3%; background: #ff9500;"></div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="card-title">已发剩余可用</div>
+      <div class="card-value">&#165;25,000</div>
+      <div class="card-sub">
+        <span>= 结转剩余 &#165;0 + 本年已发剩余 &#165;25,000</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 1.9%; background: #5856d6;"></div>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="card-title">全年剩余可用</div>
+      <div class="card-value">&#165;2,410,600</div>
+      <div class="card-sub">
+        <span>= 结转剩余 &#165;0 + 本年剩余 &#165;2,410,600</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 64.7%; background: #00c7be;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Rules Panel -->
+  <div class="rules-panel">
+    <div class="rules-header" onclick="toggleRules()">
+      <div class="rules-title">
+        <span class="rules-title-icon">!</span>
+        规则周知
+      </div>
+      <div class="rules-toggle" id="rulesToggle">
+        <span id="rulesToggleText">收起</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="#8f959e" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="rules-body" id="rulesBody" style="padding:10px 20px 12px; border-top:1px solid #f0f1f5;">
+      <div style="font-size:13px; color:#1f2329; line-height:2;">
+        <strong style="color:#d48806;">&#9888; 将在2026年2月28日凌晨清空25年剩余预算费用</strong>
+        &nbsp;&nbsp;|&nbsp;&nbsp;25年实时剩余经费：<a href="#" class="rules-link">查看</a><br>
+        预算按在职人数计算，入职当月起发放，离职次月停发；每月1日发放当月费用<br>
+        提单优先扣减上年结转预算，再扣本年预算；活动费用可通过日常报销、对公付款单提交<br>
+        <span style="color:#646a73;">如需了解更多，请前往使用手册：<a href="#" class="rules-link">部门活动经费使用文档</a></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <!-- Tabs -->
+    <div class="content-tabs">
+      <div class="content-tab active" onclick="switchTab(0, this)">部门预算</div>
+      <div class="content-tab" onclick="switchTab(1, this)">个人预算</div>
+      <div class="content-tab" onclick="switchTab(2, this)">
+        人员变动
+      </div>
+      <div class="content-tab" onclick="switchTab(3, this)">使用明细</div>
+    </div>
+
+    <!-- Tab 1: Department Budget -->
+    <div class="tab-panel active" id="tab-dept">
+      <div class="table-toolbar">
+        <div class="toolbar-right" style="margin-left:auto;">
+          <button class="btn btn-default" style="font-size:12px;">导出</button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2" style="min-width:40px;"></th>
+              <th rowspan="2" style="min-width:200px;">部门名称</th>
+              <th rowspan="2" class="text-center" style="min-width:70px;">在职人数</th>
+              <th colspan="3" class="group-header-green">上年结转</th>
+              <th colspan="5" class="group-header">本年预算</th>
+              <th colspan="2" class="group-header-purple">可用汇总</th>
+            </tr>
+            <tr>
+              <th class="text-right" style="background:#f0fff4;">结转预算</th>
+              <th class="text-right" style="background:#f0fff4;">结转已使用</th>
+              <th class="text-right" style="background:#f0fff4;">结转剩余可用</th>
+              <th class="text-right" style="background:#f0f5ff;">总金额</th>
+              <th class="text-right" style="background:#f0f5ff;">已发放</th>
+              <th class="text-right" style="background:#f0f5ff;">已使用</th>
+              <th class="text-right" style="background:#f0f5ff;">已发剩余可用</th>
+              <th class="text-right" style="background:#f0f5ff;">预算剩余可用</th>
+              <th class="text-right" style="background:#f5f0ff;">已发剩余可用</th>
+              <th class="text-right" style="background:#f5f0ff;">全年剩余可用</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-summary">
+              <td></td>
+              <td>汇总</td>
+              <td class="text-center">1,988</td>
+              <td class="text-right">125,000</td>
+              <td class="text-right">100,000</td>
+              <td class="text-right">25,000</td>
+              <td class="text-right">3,601,050</td>
+              <td class="text-right">1,215,450</td>
+              <td class="text-right">1,215,450</td>
+              <td class="text-right">0</td>
+              <td class="text-right">2,385,600</td>
+              <td class="text-right" style="font-weight:700;">25,000</td>
+              <td class="text-right" style="font-weight:700;">2,410,600</td>
+            </tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>社交游戏项目组-游戏实验室-N1设计中心-社交游戏</td>
+              <td class="text-center">4</td>
+              <td class="text-right">2,400</td>
+              <td class="text-right">2,000</td>
+              <td class="text-right">400</td>
+              <td class="text-right">7,200</td>
+              <td class="text-right">2,400</td>
+              <td class="text-right">2,800</td>
+              <td class="text-right text-negative">-400</td>
+              <td class="text-right">4,400</td>
+              <td class="text-right">0</td>
+              <td class="text-right">4,800</td>
+            </tr>
+            <tr class="sub-table-row">
+              <td colspan="13" style="padding:0;">
+                <table class="sub-table">
+                  <tr>
+                    <td style="padding-left:48px;">张三</td><td>在职</td><td>海外</td><td>团建(150)</td>
+                    <td>600</td><td>500</td><td>100</td>
+                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;">李四</td><td>在职</td><td>海外</td><td>团建(150)</td>
+                    <td>600</td><td>500</td><td>100</td>
+                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;">王五</td><td>在职</td><td>海外</td><td>团建(150)</td>
+                    <td>600</td><td>500</td><td>100</td>
+                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;">赵六</td><td>在职</td><td>海外</td><td>团建(150)</td>
+                    <td>600</td><td>500</td><td>100</td>
+                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>社交游戏项目组-会玩</td>
+              <td class="text-center">1</td>
+              <td class="text-right">600</td>
+              <td class="text-right">200</td>
+              <td class="text-right">400</td>
+              <td class="text-right">1,800</td>
+              <td class="text-right">600</td>
+              <td class="text-right">500</td>
+              <td class="text-right text-positive">100</td>
+              <td class="text-right">1,300</td>
+              <td class="text-right">500</td>
+              <td class="text-right">1,700</td>
+            </tr>
+            <tr class="sub-table-row">
+              <td colspan="13" style="padding:0;">
+                <table class="sub-table">
+                  <tr>
+                    <td style="padding-left:48px;">孙七</td><td>在职</td><td>海外</td><td>团建(150)</td>
+                    <td>600</td><td>200</td><td>400</td>
+                    <td>1,800</td><td>600</td><td>500</td><td>100</td><td>1,300</td><td>500</td><td>1,700</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>人力资源-HRCOE</td>
+              <td class="text-center">4</td>
+              <td class="text-right">2,400</td>
+              <td class="text-right">1,800</td>
+              <td class="text-right">600</td>
+              <td class="text-right">7,200</td>
+              <td class="text-right">2,400</td>
+              <td class="text-right">2,100</td>
+              <td class="text-right text-positive">300</td>
+              <td class="text-right">5,100</td>
+              <td class="text-right">900</td>
+              <td class="text-right">5,700</td>
+            </tr>
+            <tr class="sub-table-row"><td colspan="13"></td></tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>人力资源-HRSSC员工关系&薪酬福利</td>
+              <td class="text-center">3</td>
+              <td class="text-right">2,250</td>
+              <td class="text-right">1,500</td>
+              <td class="text-right">750</td>
+              <td class="text-right">5,400</td>
+              <td class="text-right">1,800</td>
+              <td class="text-right">1,600</td>
+              <td class="text-right text-positive">200</td>
+              <td class="text-right">3,800</td>
+              <td class="text-right">950</td>
+              <td class="text-right">4,550</td>
+            </tr>
+            <tr class="sub-table-row"><td colspan="13"></td></tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>贪吃蛇项目组-贪吃蛇大作战-海外-客户端开发</td>
+              <td class="text-center">3</td>
+              <td class="text-right">1,800</td>
+              <td class="text-right">1,200</td>
+              <td class="text-right">600</td>
+              <td class="text-right">5,400</td>
+              <td class="text-right">1,800</td>
+              <td class="text-right">1,900</td>
+              <td class="text-right text-negative">-100</td>
+              <td class="text-right">3,500</td>
+              <td class="text-right">500</td>
+              <td class="text-right">4,100</td>
+            </tr>
+            <tr class="sub-table-row"><td colspan="13"></td></tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>社交游戏项目组-WePlay-运营-日本-用户运营</td>
+              <td class="text-center">2</td>
+              <td class="text-right">1,200</td>
+              <td class="text-right">800</td>
+              <td class="text-right">400</td>
+              <td class="text-right">3,600</td>
+              <td class="text-right">1,200</td>
+              <td class="text-right">1,000</td>
+              <td class="text-right text-positive">200</td>
+              <td class="text-right">2,600</td>
+              <td class="text-right">600</td>
+              <td class="text-right">3,000</td>
+            </tr>
+            <tr class="sub-table-row"><td colspan="13"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-info">共 11 个部门，1-7 / 11</div>
+        <div class="page-btns">
+          <div class="page-btn">&#60;</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">&#62;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Personal Budget -->
+    <div class="tab-panel" id="tab-personal">
+      <div class="table-toolbar">
+        <div class="toolbar-right" style="margin-left:auto;">
+          <label class="toggle-label">
+            显示已离职
+            <span class="toggle-switch" onclick="this.classList.toggle('on')"></span>
+          </label>
+          <button class="btn btn-default" style="font-size:12px;">导出</button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2" style="min-width:80px;">姓名</th>
+              <th rowspan="2" style="min-width:180px;">部门</th>
+              <th rowspan="2" class="text-center">状态</th>
+              <th rowspan="2">员工类型</th>
+              <th rowspan="2">预算科目</th>
+              <th colspan="3" class="group-header-green">上年结转</th>
+              <th colspan="5" class="group-header">本年预算</th>
+              <th colspan="2" class="group-header-purple">可用汇总</th>
+              <th rowspan="2" class="text-center">已结转</th>
+            </tr>
+            <tr>
+              <th class="text-right" style="background:#f0fff4;">结转预算</th>
+              <th class="text-right" style="background:#f0fff4;">已使用</th>
+              <th class="text-right" style="background:#f0fff4;">剩余可用</th>
+              <th class="text-right" style="background:#f0f5ff;">总金额</th>
+              <th class="text-right" style="background:#f0f5ff;">已发放</th>
+              <th class="text-right" style="background:#f0f5ff;">已使用</th>
+              <th class="text-right" style="background:#f0f5ff;">已发剩余</th>
+              <th class="text-right" style="background:#f0f5ff;">预算剩余</th>
+              <th class="text-right" style="background:#f5f0ff;">已发剩余</th>
+              <th class="text-right" style="background:#f5f0ff;">全年剩余</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>张三</strong></td>
+              <td>社交游戏-游戏实验室</td>
+              <td class="text-center"><span class="status-tag status-active">在职</span></td>
+              <td>海外</td>
+              <td>团建(150)</td>
+              <td class="text-right">600</td>
+              <td class="text-right">500</td>
+              <td class="text-right">100</td>
+                            <td class="text-right">1,800</td>
+              <td class="text-right">600</td>
+              <td class="text-right">700</td>
+              <td class="text-right text-negative">-100</td>
+              <td class="text-right">1,100</td>
+              <td class="text-right">0</td>
+              <td class="text-right">1,200</td>
+              <td class="text-center text-muted">否</td>
+            </tr>
+            <tr>
+              <td><strong>李四</strong></td>
+              <td>社交游戏-游戏实验室</td>
+              <td class="text-center"><span class="status-tag status-active">在职</span></td>
+              <td>海外</td>
+              <td>团建(150)</td>
+              <td class="text-right">600</td>
+              <td class="text-right">400</td>
+              <td class="text-right">200</td>
+                            <td class="text-right">1,800</td>
+              <td class="text-right">600</td>
+              <td class="text-right">500</td>
+              <td class="text-right text-positive">100</td>
+              <td class="text-right">1,300</td>
+              <td class="text-right">300</td>
+              <td class="text-right">1,500</td>
+              <td class="text-center text-muted">否</td>
+            </tr>
+            <tr>
+              <td><strong>王五</strong></td>
+              <td>人力资源-HRCOE</td>
+              <td class="text-center"><span class="status-tag status-active">在职</span></td>
+              <td>海外</td>
+              <td>海外节日(75)</td>
+              <td class="text-right">300</td>
+              <td class="text-right">300</td>
+              <td class="text-right">0</td>
+                            <td class="text-right">900</td>
+              <td class="text-right">300</td>
+              <td class="text-right">200</td>
+              <td class="text-right text-positive">100</td>
+              <td class="text-right">700</td>
+              <td class="text-right">100</td>
+              <td class="text-right">700</td>
+              <td class="text-center text-muted">否</td>
+            </tr>
+            <tr>
+              <td><strong>孙七</strong></td>
+              <td>社交游戏-会玩</td>
+              <td class="text-center"><span class="status-tag status-active">在职</span></td>
+              <td>海外</td>
+              <td>团建(150)</td>
+              <td class="text-right">600</td>
+              <td class="text-right">200</td>
+              <td class="text-right">400</td>
+                            <td class="text-right">1,800</td>
+              <td class="text-right">600</td>
+              <td class="text-right">500</td>
+              <td class="text-right text-positive">100</td>
+              <td class="text-right">1,300</td>
+              <td class="text-right">500</td>
+              <td class="text-right">1,700</td>
+              <td class="text-center text-muted">否</td>
+            </tr>
+            <tr style="opacity:0.5;">
+              <td><strong>周八</strong></td>
+              <td>社交游戏-游戏实验室</td>
+              <td class="text-center"><span class="status-tag status-inactive">已离职</span></td>
+              <td>海外</td>
+              <td>团建(150)</td>
+              <td class="text-right">600</td>
+              <td class="text-right">600</td>
+              <td class="text-right">0</td>
+                            <td class="text-right">300</td>
+              <td class="text-right">300</td>
+              <td class="text-right">300</td>
+              <td class="text-right">0</td>
+              <td class="text-right">0</td>
+              <td class="text-right">0</td>
+              <td class="text-right">0</td>
+              <td class="text-center text-muted">否</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-info">共 1,988 人，1-20 / 1,988</div>
+        <div class="page-btns">
+          <div class="page-btn">&#60;</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn">...</div>
+          <div class="page-btn">100</div>
+          <div class="page-btn">&#62;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Personnel Changes -->
+    <div class="tab-panel" id="tab-changes">
+      <div class="inline-filter">
+        <label>变动期间:</label>
+        <input type="text" class="date-input" value="2026-01" placeholder="开始月份">
+        <span style="color:#8f959e;">至</span>
+        <input type="text" class="date-input" value="2026-03" placeholder="结束月份">
+        <button class="btn btn-primary" style="font-size:12px;">查询</button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:40px;"></th>
+              <th style="min-width:240px;">部门名称</th>
+              <th class="text-center">期初人数</th>
+              <th class="text-center" style="color:#3370ff;">本期入职</th>
+              <th class="text-center" style="color:#ff4d4f;">本期离职</th>
+              <th class="text-center" style="color:#d48806;">转入</th>
+              <th class="text-center" style="color:#d48806;">转出</th>
+              <th class="text-center">期末人数</th>
+              <th class="text-center">净变动</th>
+              <th class="text-right">预算影响金额</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-summary">
+              <td></td>
+              <td>汇总</td>
+              <td class="text-center">1,980</td>
+              <td class="text-center" style="color:#3370ff; font-weight:600;">12</td>
+              <td class="text-center" style="color:#ff4d4f; font-weight:600;">4</td>
+              <td class="text-center" style="color:#d48806; font-weight:600;">3</td>
+              <td class="text-center" style="color:#d48806; font-weight:600;">3</td>
+              <td class="text-center">1,988</td>
+              <td class="text-center text-positive">+8</td>
+              <td class="text-right">+&#165;8,400</td>
+
+            </tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>社交游戏项目组-游戏实验室</td>
+              <td class="text-center">3</td>
+              <td class="text-center" style="color:#3370ff; font-weight:500;">2</td>
+              <td class="text-center" style="color:#ff4d4f; font-weight:500;">1</td>
+              <td class="text-center" style="color:#d48806;">1</td>
+              <td class="text-center">0</td>
+              <td class="text-center">5</td>
+              <td class="text-center text-positive">+2</td>
+              <td class="text-right">+&#165;2,550</td>
+
+            </tr>
+            <tr class="sub-table-row">
+              <td colspan="11" style="padding:0;">
+                <table class="sub-table" style="width:100%;">
+                  <tr>
+                    <td style="padding-left:48px; width:120px;"><strong>陈九</strong></td>
+                    <td style="width:80px;"><span class="change-join">入职</span></td>
+                    <td style="width:100px;">2026-01-15</td>
+                    <td style="width:60px;">海外</td>
+                    <td style="width:100px;">团建(150)</td>
+                    <td style="width:80px;">&#165;150/月</td>
+                    <td style="width:80px;">12个月</td>
+                    <td style="width:100px; color:#3370ff;">+&#165;1,800</td>
+                    <td>入职当月开始发放</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;"><strong>吴十</strong></td>
+                    <td><span class="change-join">入职</span></td>
+                    <td>2026-03-01</td>
+                    <td>海外</td>
+                    <td>团建(150)</td>
+                    <td>&#165;150/月</td>
+                    <td>10个月</td>
+                    <td style="color:#3370ff;">+&#165;1,500</td>
+                    <td>入职当月开始发放</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;"><strong>周八</strong></td>
+                    <td><span class="change-leave">离职</span></td>
+                    <td>2026-02-15</td>
+                    <td>海外</td>
+                    <td>团建(150)</td>
+                    <td>&#165;150/月</td>
+                    <td>减少10个月</td>
+                    <td style="color:#ff4d4f;">-&#165;2,250</td>
+                    <td>次月停止发放；需还&#165;150；剩余预算回收至部门</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;"><strong>钱十二</strong></td>
+                    <td><span class="change-transfer">转入</span></td>
+                    <td>2026-02-01</td>
+                    <td>海外</td>
+                    <td>团建(150)</td>
+                    <td>&#165;150/月</td>
+                    <td>11个月</td>
+                    <td style="color:#d48806;">+&#165;1,500</td>
+                    <td>从 贪吃蛇项目组 转入；预算随人转移</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>人力资源-HRCOE</td>
+              <td class="text-center">5</td>
+              <td class="text-center" style="color:#3370ff;">0</td>
+              <td class="text-center" style="color:#ff4d4f; font-weight:500;">1</td>
+              <td class="text-center" style="color:#d48806;">1</td>
+              <td class="text-center" style="color:#d48806;">1</td>
+              <td class="text-center">4</td>
+              <td class="text-center text-negative">-1</td>
+              <td class="text-right" style="color:#ff4d4f;">-&#165;1,200</td>
+
+            </tr>
+            <tr class="sub-table-row">
+              <td colspan="11" style="padding:0;">
+                <table class="sub-table" style="width:100%;">
+                  <tr>
+                    <td style="padding-left:48px; width:120px;"><strong>郑十一</strong></td>
+                    <td style="width:80px;"><span class="change-leave">离职</span></td>
+                    <td style="width:100px;">2026-01-20</td>
+                    <td style="width:60px;">海外</td>
+                    <td style="width:100px;">团建(150)</td>
+                    <td style="width:80px;">&#165;150/月</td>
+                    <td style="width:80px;">减少11个月</td>
+                    <td style="width:100px; color:#ff4d4f;">-&#165;1,200</td>
+                    <td>次月停止发放；剩余预算回收至部门</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;"><strong>孙十三</strong></td>
+                    <td><span class="change-transfer">转入</span></td>
+                    <td>2026-03-01</td>
+                    <td>海外</td>
+                    <td>团建(150)</td>
+                    <td>&#165;150/月</td>
+                    <td>10个月</td>
+                    <td style="color:#d48806;">+&#165;1,500</td>
+                    <td>从 社交游戏项目组-WePlay 转入；预算随人转移</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-left:48px;"><strong>冯十四</strong></td>
+                    <td><span class="change-transfer">转出</span></td>
+                    <td>2026-01-10</td>
+                    <td>海外</td>
+                    <td>团建(150)</td>
+                    <td>&#165;150/月</td>
+                    <td>减少12个月</td>
+                    <td style="color:#d48806;">-&#165;1,800</td>
+                    <td>转出至 人力资源-HRSSC；预算随人转移</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>社交游戏项目组-会玩</td>
+              <td class="text-center">1</td>
+              <td class="text-center">0</td>
+              <td class="text-center">0</td>
+              <td class="text-center">0</td>
+              <td class="text-center">0</td>
+              <td class="text-center">1</td>
+              <td class="text-center trend-flat">0</td>
+              <td class="text-right text-muted">&#165;0</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>人力资源-HRSSC员工关系&薪酬福利</td>
+              <td class="text-center">3</td>
+              <td class="text-center" style="color:#3370ff;">1</td>
+              <td class="text-center">0</td>
+              <td class="text-center" style="color:#d48806;">1</td>
+              <td class="text-center">0</td>
+              <td class="text-center">5</td>
+              <td class="text-center text-positive">+2</td>
+              <td class="text-right">+&#165;3,300</td>
+
+            </tr>
+            <tr>
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>贪吃蛇项目组-贪吃蛇大作战-海外-客户端开发</td>
+              <td class="text-center">3</td>
+              <td class="text-center">0</td>
+              <td class="text-center">0</td>
+              <td class="text-center">0</td>
+              <td class="text-center" style="color:#d48806;">1</td>
+              <td class="text-center">2</td>
+              <td class="text-center text-negative">-1</td>
+              <td class="text-right" style="color:#ff4d4f;">-&#165;1,500</td>
+
+            </tr>
+            <tr>
+              <td>
+                <span class="expand-icon">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </span>
+              </td>
+              <td>社交游戏项目组-WePlay-运营-日本-用户运营</td>
+              <td class="text-center">2</td>
+              <td class="text-center" style="color:#3370ff;">1</td>
+              <td class="text-center">0</td>
+              <td class="text-center">0</td>
+              <td class="text-center" style="color:#d48806;">1</td>
+              <td class="text-center">2</td>
+              <td class="text-center trend-flat">0</td>
+              <td class="text-right text-muted">&#165;0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-info">共 11 个部门</div>
+        <div class="page-btns">
+          <div class="page-btn">&#60;</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">&#62;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Usage Detail -->
+    <div class="tab-panel" id="tab-detail">
+      <div class="table-toolbar">
+        <div class="toolbar-right" style="margin-left:auto;">
+          <button class="btn btn-default" style="font-size:12px;">导出</button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:120px;">单据编号</th>
+              <th style="min-width:160px;">部门名称</th>
+              <th style="min-width:120px;">分摊费用人员</th>
+              <th class="text-center">分摊人数</th>
+              <th class="text-right">分摊金额</th>
+              <th>费用类型</th>
+              <th>费用类型明细</th>
+              <th style="min-width:200px;">付款事项</th>
+              <th class="text-center">付款状态</th>
+              <th>提交人</th>
+              <th>提交时间</th>
+              <th class="text-center">流程状态</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#" class="rules-link">BXD007803</a></td>
+              <td>人力资源-HRBP</td>
+              <td><a href="#" class="rules-link">HRBP</a></td>
+              <td class="text-center">20</td>
+              <td class="text-right">1,644.4</td>
+              <td>人力成本/福利费</td>
+              <td>员工活动/聚餐</td>
+              <td>hrbp组聚餐</td>
+              <td class="text-center"><span class="status-tag" style="background:#fff7e6; color:#d48806;">未付款</span></td>
+              <td>杨宏迪</td>
+              <td>2026-03-18 21:46</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">进行中</span></td>
+            </tr>
+            <tr>
+              <td><a href="#" class="rules-link">BXD007802</a></td>
+              <td>人力资源-招聘中台</td>
+              <td><a href="#" class="rules-link">招聘中台</a></td>
+              <td class="text-center">20</td>
+              <td class="text-right">943.55</td>
+              <td>人力成本/福利费</td>
+              <td>员工活动/聚餐</td>
+              <td>2026年3/12号，校招组新实习同学入职+表现优秀同学佳玲离职，校招组聚餐，共花费443.55元</td>
+              <td class="text-center"><span class="status-tag" style="background:#fff7e6; color:#d48806;">未付款</span></td>
+              <td>章慧朋</td>
+              <td>2026-03-18 21:12</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">进行中</span></td>
+            </tr>
+            <tr>
+              <td><a href="#" class="rules-link">BXD007801</a></td>
+              <td>社交游戏项目组-WePlay-客服&amp;审核组</td>
+              <td><a href="#" class="rules-link">客服&amp;审核组</a></td>
+              <td class="text-center">251</td>
+              <td class="text-right">200</td>
+              <td>人力成本/福利费</td>
+              <td>员工活动/奖品</td>
+              <td>员工获得激励</td>
+              <td class="text-center"><span class="status-tag" style="background:#fff7e6; color:#d48806;">未付款</span></td>
+              <td>彭沁</td>
+              <td>2026-03-18 17:14</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">流转完成</span></td>
+            </tr>
+            <tr>
+              <td><a href="#" class="rules-link">HWFLF000019</a></td>
+              <td>WePlay</td>
+              <td><a href="#" class="rules-link">WePlay</a></td>
+              <td class="text-center">143</td>
+              <td class="text-right">1,200.00</td>
+              <td>人力成本/福利费</td>
+              <td>员工活动/聚餐</td>
+              <td>Jackaroo King-app</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">已付款</span></td>
+              <td>吴燕</td>
+              <td>2026-02-20 10:30</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">流转完成</span></td>
+            </tr>
+            <tr>
+              <td><a href="#" class="rules-link">HWFLF000019</a></td>
+              <td>WePlay</td>
+              <td><a href="#" class="rules-link">WePlay</a></td>
+              <td class="text-center">143</td>
+              <td class="text-right">6,600.00</td>
+              <td>人力成本/福利费</td>
+              <td>员工活动/聚餐</td>
+              <td>WePlay-中东</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">已付款</span></td>
+              <td>吴燕</td>
+              <td>2026-02-20 10:30</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">流转完成</span></td>
+            </tr>
+            <tr>
+              <td><a href="#" class="rules-link">HWFLF000018</a></td>
+              <td>WePlay</td>
+              <td><a href="#" class="rules-link">客服&amp;审核组</a></td>
+              <td class="text-center">102</td>
+              <td class="text-right">4,901.12</td>
+              <td>人力成本/福利费</td>
+              <td>员工活动/聚餐</td>
+              <td>WePlay-中东</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">已付款</span></td>
+              <td>吴燕</td>
+              <td>2026-01-15 09:22</td>
+              <td class="text-center"><span class="status-tag" style="background:#f0fff4; color:#34c759;">流转完成</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-info">共 48 条，1-20 / 48</div>
+        <div class="page-btns">
+          <div class="page-btn">&#60;</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn">&#62;</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+  <!-- Page: 预算编制 -->
+  <div class="page-section" id="page-planning">
+  <div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+    <h1>预算编制</h1>
+    <button class="btn btn-primary" onclick="openBudgetModal()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      新增预算编制
+    </button>
+  </div>
+  <div class="main">
+    <div class="planning-table">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:180px;">预算模版名称</th>
+              <th>人员范围</th>
+              <th style="min-width:200px;">控制预算科目</th>
+              <th>控制周期</th>
+              <th>发放周期</th>
+              <th>发放时间</th>
+              <th class="text-right">单次发放金额</th>
+              <th>币种</th>
+              <th>预算过期时间</th>
+              <th class="text-center">状态</th>
+              <th style="min-width:140px;">创建时间</th>
+              <th>创建人</th>
+              <th style="min-width:140px;">更新时间</th>
+              <th>更新人</th>
+              <th style="min-width:120px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>海外员工团建预算</strong></td>
+              <td>海外员工</td>
+              <td>人力成本-福利费/员工团建预算</td>
+              <td>按年度</td>
+              <td>按月发放</td>
+              <td>每月1号或入职日</td>
+              <td class="text-right">150.00</td>
+              <td>CNY</td>
+              <td>次年3月1号零点</td>
+              <td class="text-center"><span class="status-tag status-active">启用</span></td>
+              <td>2025-03-15 10:30</td>
+              <td>孙明</td>
+              <td>2025-12-01 14:20</td>
+              <td>孙明</td>
+              <td>
+                <button class="btn-text" onclick="openBudgetModal('edit')">编辑</button>
+                <button class="btn-text" onclick="openLogModal()">日志</button>
+                <button class="btn-danger-text">禁用</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>海外员工节日预算</strong></td>
+              <td>海外员工</td>
+              <td>人力成本-福利费/海外节日预算</td>
+              <td>按年度</td>
+              <td>按月发放</td>
+              <td>每月1号或入职日</td>
+              <td class="text-right">75.00</td>
+              <td>CNY</td>
+              <td>次年3月1号零点</td>
+              <td class="text-center"><span class="status-tag status-active">启用</span></td>
+              <td>2025-05-20 09:15</td>
+              <td>孙明</td>
+              <td>2025-11-18 16:45</td>
+              <td>李婷</td>
+              <td>
+                <button class="btn-text" onclick="openBudgetModal('edit')">编辑</button>
+                <button class="btn-text" onclick="openLogModal()">日志</button>
+                <button class="btn-danger-text">禁用</button>
+              </td>
+            </tr>
+            <tr style="opacity:0.6;">
+              <td><strong>国内员工团建预算(已停用)</strong></td>
+              <td>国内员工</td>
+              <td>人力成本-福利费/员工团建预算</td>
+              <td>按年度</td>
+              <td>按月发放</td>
+              <td>每月1号或入职日</td>
+              <td class="text-right">100.00</td>
+              <td>CNY</td>
+              <td>次年3月1号零点</td>
+              <td class="text-center"><span class="status-tag status-inactive">禁用</span></td>
+              <td>2024-08-10 11:00</td>
+              <td>王磊</td>
+              <td>2025-06-30 09:00</td>
+              <td>孙明</td>
+              <td>
+                <button class="btn-text" onclick="openLogModal()">日志</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-info">共 3 条</div>
+        <div class="page-btns">
+          <div class="page-btn active">1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+<!-- Modal: New/Edit Budget -->
+<div class="modal-overlay" id="budgetModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">新增预算编制</h2>
+      <div class="modal-close" onclick="closeBudgetModal()">&times;</div>
+    </div>
+    <div class="modal-body">
+      <!-- 新增模式：全部字段可录入 -->
+      <div id="modalCreateMode" style="display:none;">
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 预算模版名称</div>
+          <div class="form-control">
+            <input class="form-input" type="text" placeholder="请输入预算模版名称">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 人员范围</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option value="">请选择人员范围</option>
+              <option>海外员工（base在非中国大陆员工，不含技术支持）</option>
+              <option>国内员工（本期暂无）</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 控制预算科目</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option value="">请选择控制预算科目</option>
+              <option>人力成本-福利费/员工团建预算</option>
+              <option>人力成本-福利费/海外节日预算</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 预算控制周期</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option>按年度</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 预算发放周期</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option>按月发放</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 预算发放时间</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option>每月1号或入职日</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 单次发放金额</div>
+          <div class="form-control">
+            <div class="form-suffix">
+              <input class="form-input" type="number" placeholder="请输入金额" step="0.01" min="0.01">
+              <span class="form-suffix-text">元/人/月</span>
+            </div>
+            <div class="form-hint">精度支持小数点后2位，最小0.01</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 币种</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option>人民币 (CNY)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label"><span class="required">*</span> 预算过期时间</div>
+          <div class="form-control">
+            <select class="form-select">
+              <option>次年3月1号零点</option>
+            </select>
+            <div class="form-hint">手工执行过期，特殊延期可线下沟通</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 编辑模式：上方只读 + 下方可编辑 -->
+      <div id="modalEditMode" style="display:none;">
+        <div class="form-section">
+          <div class="form-section-title">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#8f959e" stroke-width="1.5" stroke-linecap="round"/></svg>
+            预算默认配置
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">人员范围</div>
+            <div class="form-static-value">海外员工（base在非中国大陆员工，不含技术支持）</div>
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">控制预算科目</div>
+            <div class="form-static-value">人力成本-福利费/员工团建预算</div>
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">预算控制周期</div>
+            <div class="form-static-value">按年度</div>
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">预算发放周期</div>
+            <div class="form-static-value">按月发放</div>
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">预算发放时间</div>
+            <div class="form-static-value">每月1号或入职日</div>
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">币种</div>
+            <div class="form-static-value">人民币 (CNY)</div>
+          </div>
+          <div class="form-static-row">
+            <div class="form-static-label">预算过期时间</div>
+            <div class="form-static-value">次年3月1号零点<span style="font-size:12px; color:#8f959e; margin-left:8px;">手工执行过期，特殊延期可线下沟通</span></div>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <div class="form-section" style="margin-top:20px;">
+          <div class="form-section-title">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10.5 1.5l2 2-8 8H2.5v-2l8-8z" stroke="#3370ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="color:#3370ff;">编辑内容</span>
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span> 预算模版名称</div>
+            <div class="form-control">
+              <input class="form-input" type="text" value="海外员工团建预算" placeholder="请输入预算模版名称">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label"><span class="required">*</span> 单次发放金额</div>
+            <div class="form-control">
+              <div class="form-suffix">
+                <input class="form-input" id="budgetAmount" type="number" placeholder="请输入金额" step="0.01" min="0.01" value="150.00" data-original="150.00" oninput="toggleEffectMonth()">
+                <span class="form-suffix-text">元/人/月</span>
+              </div>
+              <div class="form-hint">精度支持小数点后2位，最小0.01</div>
+            </div>
+          </div>
+          <div class="form-group" id="effectMonthGroup" style="display:none;">
+            <div class="form-label"><span class="required">*</span> 生效月份</div>
+            <div class="form-control">
+              <input class="form-input" type="month" value="2026-04">
+              <div class="form-hint">生效月份 &lt; 提交月份：对往期多退少补，补发金额 =（调整后-调整前）*（提交月份-生效月份）<br>生效月份 = 提交月份且已发放：补发金额 = 调整后金额-调整前金额<br>生效月份 = 提交月份且未发放：无需补发，按调整后金额发放<br>生效月份 &gt; 提交月份：到期后按新金额发放</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeBudgetModal()">取消</button>
+      <button class="btn btn-primary" onclick="closeBudgetModal()">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Operation Log -->
+<div class="modal-overlay" id="logModal">
+  <div class="modal" style="width:780px;">
+    <div class="modal-header">
+      <h2>操作日志</h2>
+      <div class="modal-close" onclick="closeLogModal()">&times;</div>
+    </div>
+    <div class="modal-body" style="padding:16px 24px;">
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+          <tr>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">操作时间</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">操作人</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">操作类型</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb;">修改前</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb;">修改后</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2025-12-01 14:20</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">孙明</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">编辑</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">单次发放金额：120.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">单次发放金额：150.00<br><span style="color:#8f959e;">生效月份：2026年1月</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2025-08-15 11:30</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">李婷</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">编辑</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">预算模版名称：海外团建预算</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">预算模版名称：海外员工团建预算</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2025-06-01 09:45</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">孙明</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">编辑</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">单次发放金额：100.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">单次发放金额：120.00<br><span style="color:#8f959e;">生效月份：2025年7月</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2025-04-10 16:00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">王磊</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="color:#ff4d4f;">禁用</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">状态：启用</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">状态：禁用</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2025-04-15 09:30</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">孙明</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="color:#34c759;">启用</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">状态：禁用</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">状态：启用</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2025-03-15 10:30</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">孙明</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">创建</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; color:#8f959e;">—</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; color:#8f959e;">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeLogModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchPage(page, el) {
+  document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function openBudgetModal(type) {
+  document.getElementById('budgetModal').classList.add('visible');
+  var isEdit = type === 'edit';
+  document.getElementById('modalTitle').textContent = isEdit ? '编辑预算编制' : '新增预算编制';
+  document.getElementById('modalCreateMode').style.display = isEdit ? 'none' : 'block';
+  document.getElementById('modalEditMode').style.display = isEdit ? 'block' : 'none';
+  if (isEdit) document.getElementById('effectMonthGroup').style.display = 'none';
+}
+function toggleEffectMonth() {
+  var input = document.getElementById('budgetAmount');
+  var group = document.getElementById('effectMonthGroup');
+  group.style.display = input.value !== input.dataset.original ? 'flex' : 'none';
+}
+function closeBudgetModal() {
+  document.getElementById('budgetModal').classList.remove('visible');
+}
+document.getElementById('budgetModal').addEventListener('click', function(e) {
+  if (e.target === this) closeBudgetModal();
+});
+
+function openLogModal() {
+  document.getElementById('logModal').classList.add('visible');
+}
+function closeLogModal() {
+  document.getElementById('logModal').classList.remove('visible');
+}
+document.getElementById('logModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLogModal();
+});
+
+function switchYear(el) {
+  document.querySelectorAll('.year-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function switchTab(index, el) {
+  document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-panel')[index].classList.add('active');
+}
+
+function toggleRules() {
+  var body = document.getElementById('rulesBody');
+  var toggle = document.getElementById('rulesToggle');
+  var text = document.getElementById('rulesToggleText');
+  body.classList.toggle('hidden');
+  toggle.classList.toggle('collapsed');
+  text.textContent = body.classList.contains('hidden') ? '展开' : '收起';
+}
+
+function toggleExpand(row) {
+  const subRow = row.nextElementSibling;
+  if (subRow && subRow.classList.contains('sub-table-row')) {
+    subRow.classList.toggle('visible');
+    const icon = row.querySelector('.expand-icon');
+    if (icon) icon.classList.toggle('expanded');
+  }
+}
+
+function toggleDeptDropdown() {
+  var dd = document.getElementById('deptDropdown');
+  dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  if (dd.style.display === 'block') {
+    document.getElementById('deptSearchInput').focus();
+  }
+}
+
+function filterDeptOptions() {
+  var keyword = document.getElementById('deptSearchInput').value.toLowerCase();
+  document.querySelectorAll('#deptOptionsList .dept-opt').forEach(function(opt) {
+    var text = opt.textContent.toLowerCase();
+    opt.classList.toggle('hidden', keyword && text.indexOf(keyword) === -1);
+  });
+}
+
+function selectDept(name, el) {
+  document.getElementById('deptValue').textContent = name;
+  document.getElementById('deptDropdown').style.display = 'none';
+  document.getElementById('deptSearchInput').value = '';
+  document.querySelectorAll('#deptOptionsList .dept-opt').forEach(function(o) {
+    o.classList.remove('selected', 'hidden');
+  });
+  if (el) el.classList.add('selected');
+}
+
+document.addEventListener('click', function(e) {
+  var dd = document.getElementById('deptDropdown');
+  var trigger = document.getElementById('deptTrigger');
+  if (dd && !dd.contains(e.target) && !trigger.contains(e.target)) {
+    dd.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>
