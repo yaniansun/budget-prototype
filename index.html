@@ -82,7 +82,7 @@
   .tab-badge { background: #ff4d4f; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 8px; position: absolute; top: 8px; right: 4px; }
 
   /* Table Toolbar */
-  .table-toolbar { padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f1f5; }
+  .table-toolbar { padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f1f5; background: #fff; }
   .toolbar-left { display: flex; align-items: center; gap: 8px; }
   .toolbar-right { display: flex; align-items: center; gap: 8px; }
   .col-group-tag { padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; border: 1px solid #e5e6eb; background: #fff; transition: all 0.2s; }
@@ -165,7 +165,7 @@
   .sub-table td { padding: 8px 12px 8px 48px; font-size: 12px; color: #646a73; border-bottom: 1px solid #f0f1f5; }
 
   /* Date range filter for Tab3 */
-  .inline-filter { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fafbfc; border-bottom: 1px solid #f0f1f5; }
+  .inline-filter { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #f0f1f5; }
   .inline-filter label { font-size: 12px; color: #646a73; }
   .date-input { padding: 4px 10px; border: 1px solid #d0d3d6; border-radius: 4px; font-size: 12px; width: 120px; }
 
@@ -468,7 +468,6 @@
         <table>
           <thead>
             <tr>
-              <th rowspan="2" style="min-width:40px;"></th>
               <th rowspan="2" style="min-width:200px;">部门名称</th>
               <th rowspan="2" class="text-center" style="min-width:70px;">在职人数</th>
               <th colspan="3" class="group-header-green">上年结转</th>
@@ -490,7 +489,6 @@
           </thead>
           <tbody>
             <tr class="row-summary">
-              <td></td>
               <td>汇总</td>
               <td class="text-center">1,988</td>
               <td class="text-right">125,000</td>
@@ -504,12 +502,7 @@
               <td class="text-right" style="font-weight:700;">25,000</td>
               <td class="text-right" style="font-weight:700;">2,410,600</td>
             </tr>
-            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
-              <td>
-                <span class="expand-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </span>
-              </td>
+            <tr>
               <td>社交游戏项目组-游戏实验室-N1设计中心-社交游戏</td>
               <td class="text-center">4</td>
               <td class="text-right">2,400</td>
@@ -523,38 +516,7 @@
               <td class="text-right">0</td>
               <td class="text-right">4,800</td>
             </tr>
-            <tr class="sub-table-row">
-              <td colspan="13" style="padding:0;">
-                <table class="sub-table">
-                  <tr>
-                    <td style="padding-left:48px;">张三</td><td>在职</td><td>海外</td><td>团建(150)</td>
-                    <td>600</td><td>500</td><td>100</td>
-                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
-                  </tr>
-                  <tr>
-                    <td style="padding-left:48px;">李四</td><td>在职</td><td>海外</td><td>团建(150)</td>
-                    <td>600</td><td>500</td><td>100</td>
-                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
-                  </tr>
-                  <tr>
-                    <td style="padding-left:48px;">王五</td><td>在职</td><td>海外</td><td>团建(150)</td>
-                    <td>600</td><td>500</td><td>100</td>
-                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
-                  </tr>
-                  <tr>
-                    <td style="padding-left:48px;">赵六</td><td>在职</td><td>海外</td><td>团建(150)</td>
-                    <td>600</td><td>500</td><td>100</td>
-                    <td>1,800</td><td>600</td><td>700</td><td style="color:#ff4d4f;">-100</td><td>1,100</td><td>0</td><td>1,200</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
-              <td>
-                <span class="expand-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </span>
-              </td>
+            <tr>
               <td>社交游戏项目组-会玩</td>
               <td class="text-center">1</td>
               <td class="text-right">600</td>
@@ -568,23 +530,7 @@
               <td class="text-right">500</td>
               <td class="text-right">1,700</td>
             </tr>
-            <tr class="sub-table-row">
-              <td colspan="13" style="padding:0;">
-                <table class="sub-table">
-                  <tr>
-                    <td style="padding-left:48px;">孙七</td><td>在职</td><td>海外</td><td>团建(150)</td>
-                    <td>600</td><td>200</td><td>400</td>
-                    <td>1,800</td><td>600</td><td>500</td><td>100</td><td>1,300</td><td>500</td><td>1,700</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
-              <td>
-                <span class="expand-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </span>
-              </td>
+            <tr>
               <td>人力资源-HRCOE</td>
               <td class="text-center">4</td>
               <td class="text-right">2,400</td>
@@ -598,14 +544,8 @@
               <td class="text-right">900</td>
               <td class="text-right">5,700</td>
             </tr>
-            <tr class="sub-table-row"><td colspan="13"></td></tr>
-            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
-              <td>
-                <span class="expand-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </span>
-              </td>
-              <td>人力资源-HRSSC员工关系&薪酬福利</td>
+            <tr>
+              <td>人力资源-HRSSC员工关系&amp;薪酬福利</td>
               <td class="text-center">3</td>
               <td class="text-right">2,250</td>
               <td class="text-right">1,500</td>
@@ -618,13 +558,7 @@
               <td class="text-right">950</td>
               <td class="text-right">4,550</td>
             </tr>
-            <tr class="sub-table-row"><td colspan="13"></td></tr>
-            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
-              <td>
-                <span class="expand-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </span>
-              </td>
+            <tr>
               <td>贪吃蛇项目组-贪吃蛇大作战-海外-客户端开发</td>
               <td class="text-center">3</td>
               <td class="text-right">1,800</td>
@@ -638,13 +572,7 @@
               <td class="text-right">500</td>
               <td class="text-right">4,100</td>
             </tr>
-            <tr class="sub-table-row"><td colspan="13"></td></tr>
-            <tr onclick="toggleExpand(this)" style="cursor:pointer;">
-              <td>
-                <span class="expand-icon">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 2.5L8 6L4.5 9.5" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </span>
-              </td>
+            <tr>
               <td>社交游戏项目组-WePlay-运营-日本-用户运营</td>
               <td class="text-center">2</td>
               <td class="text-right">1,200</td>
@@ -658,7 +586,6 @@
               <td class="text-right">600</td>
               <td class="text-right">3,000</td>
             </tr>
-            <tr class="sub-table-row"><td colspan="13"></td></tr>
           </tbody>
         </table>
       </div>
@@ -701,6 +628,7 @@
         <table>
           <thead>
             <tr>
+              <th rowspan="2" style="min-width:100px;">员工编号</th>
               <th rowspan="2" style="min-width:80px;">姓名</th>
               <th rowspan="2" style="min-width:180px;">部门</th>
               <th rowspan="2" class="text-center">状态</th>
@@ -726,6 +654,7 @@
           </thead>
           <tbody>
             <tr>
+              <td><a href="#" style="color:#3370ff; text-decoration:none;">a88521ca</a></td>
               <td><strong>张三</strong></td>
               <td>社交游戏-游戏实验室</td>
               <td class="text-center"><span class="status-tag status-active">在职</span></td>
@@ -744,6 +673,7 @@
               <td class="text-center text-muted">否</td>
             </tr>
             <tr>
+              <td><a href="#" style="color:#3370ff; text-decoration:none;">96386f2g</a></td>
               <td><strong>李四</strong></td>
               <td>社交游戏-游戏实验室</td>
               <td class="text-center"><span class="status-tag status-active">在职</span></td>
@@ -762,6 +692,7 @@
               <td class="text-center text-muted">否</td>
             </tr>
             <tr>
+              <td><a href="#" style="color:#3370ff; text-decoration:none;">8c17fed2</a></td>
               <td><strong>王五</strong></td>
               <td>人力资源-HRCOE</td>
               <td class="text-center"><span class="status-tag status-active">在职</span></td>
@@ -780,6 +711,7 @@
               <td class="text-center text-muted">否</td>
             </tr>
             <tr>
+              <td><a href="#" style="color:#3370ff; text-decoration:none;">5f826gd3</a></td>
               <td><strong>孙七</strong></td>
               <td>社交游戏-会玩</td>
               <td class="text-center"><span class="status-tag status-active">在职</span></td>
@@ -798,6 +730,7 @@
               <td class="text-center text-muted">否</td>
             </tr>
             <tr style="opacity:0.5;">
+              <td><a href="#" style="color:#3370ff; text-decoration:none;">59e6cc3d</a></td>
               <td><strong>周八</strong></td>
               <td>社交游戏-游戏实验室</td>
               <td class="text-center"><span class="status-tag status-inactive">已离职</span></td>
@@ -836,9 +769,9 @@
     <div class="tab-panel" id="tab-changes">
       <div class="inline-filter">
         <label>变动期间:</label>
-        <input type="text" class="date-input" value="2026-01" placeholder="开始月份">
+        <input type="date" class="date-input" value="2026-01-01">
         <span style="color:#8f959e;">至</span>
-        <input type="text" class="date-input" value="2026-03" placeholder="结束月份">
+        <input type="date" class="date-input" value="2026-03-20">
         <button class="btn btn-primary" style="font-size:12px;">查询</button>
       </div>
       <div class="table-wrapper">
