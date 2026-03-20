@@ -330,31 +330,31 @@
         </select>
       </div>
       <div class="filter-group" style="position:relative;">
-        <div class="combo-filter" style="position:relative; display:flex; border:1px solid #d0d3d6; border-radius:6px; overflow:visible; min-width:360px; background:#fff;">
-          <!-- Type Selector -->
-          <div id="comboTypeTrigger" onclick="toggleComboType()" style="display:flex; align-items:center; gap:4px; padding:6px 12px; border-right:1px solid #d0d3d6; cursor:pointer; white-space:nowrap; font-size:13px; color:#1f2329; user-select:none; background:#fff; border-radius:6px 0 0 6px;">
-            <span id="comboTypeLabel">部门</span>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="#646a73" fill="none" stroke-width="1.5"/></svg>
+        <span class="filter-label">部门:</span>
+        <div class="search-select" style="position:relative; min-width:200px;">
+          <div class="filter-select" id="deptTrigger" onclick="toggleDeptDropdown()" style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+            <span id="deptValue">全部部门</span>
           </div>
-          <!-- Type Dropdown -->
-          <div id="comboTypeDropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:120px; background:#fff; border:1px solid #d0d3d6; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.12); z-index:110; padding:4px 0;">
-            <div class="dept-opt selected" onmousedown="selectComboType('部门', this)">部门</div>
-            <div class="dept-opt" onmousedown="selectComboType('人员', this)">人员</div>
-          </div>
-          <!-- Value Area -->
-          <div id="comboValueTrigger" onclick="toggleComboValue()" style="flex:1; display:flex; align-items:center; justify-content:space-between; padding:6px 12px; cursor:pointer; font-size:13px; color:#1f2329; background:#fff;">
-            <span id="comboValueLabel">全部部门</span>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="#646a73" fill="none" stroke-width="1.5"/></svg>
-          </div>
-          <!-- Value Dropdown -->
-          <div id="comboValueDropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #d0d3d6; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.12); z-index:100;">
+          <div class="dept-dropdown" id="deptDropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:280px; background:#fff; border:1px solid #d0d3d6; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.12); z-index:100;">
             <div style="padding:8px 12px; border-bottom:1px solid #f0f1f5;">
               <div style="display:flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid #d0d3d6; border-radius:6px; background:#fff;">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#8f959e" stroke-width="1.5"/><path d="M9.5 9.5L12.5 12.5" stroke="#8f959e" stroke-width="1.5" stroke-linecap="round"/></svg>
-                <input type="text" id="comboSearchInput" placeholder="搜索" oninput="filterComboOptions()" style="border:none; outline:none; font-size:13px; width:100%; background:transparent;">
+                <input type="text" id="deptSearchInput" placeholder="搜索" oninput="filterDeptOptions()" style="border:none; outline:none; font-size:13px; width:100%; background:transparent;">
               </div>
             </div>
-            <div id="comboOptionsList" style="max-height:240px; overflow-y:auto; padding:4px 0;"></div>
+            <div id="deptOptionsList" style="max-height:240px; overflow-y:auto; padding:4px 0;">
+              <div class="dept-opt selected" onmousedown="selectDept('全部部门', this)">全部部门</div>
+              <div class="dept-opt" onmousedown="selectDept('25届夏令营', this)">25届夏令营</div>
+              <div class="dept-opt" onmousedown="selectDept('42 项目组', this)">42 项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('社交游戏项目组', this)">社交游戏项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('人力资源', this)">人力资源</div>
+              <div class="dept-opt" onmousedown="selectDept('青藤之恋项目组', this)">青藤之恋项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('贪吃蛇项目组', this)">贪吃蛇项目组</div>
+              <div class="dept-opt" onmousedown="selectDept('财务', this)">财务</div>
+              <div class="dept-opt" onmousedown="selectDept('财务&amp;法务&amp;游戏出版', this)">财务&amp;法务&amp;游戏出版</div>
+              <div class="dept-opt" onmousedown="selectDept('采购', this)">采购</div>
+              <div class="dept-opt" onmousedown="selectDept('测试支持团队', this)">测试支持团队</div>
+            </div>
           </div>
         </div>
       </div>
@@ -436,8 +436,8 @@
     </div>
     <div class="rules-body" id="rulesBody" style="padding:10px 20px 12px; border-top:1px solid #f0f1f5;">
       <div style="font-size:13px; color:#1f2329; line-height:2;">
-        <strong style="color:#d48806;">&#9888; 将在2026年2月28日凌晨清空25年剩余预算费用</strong>
-        &nbsp;&nbsp;|&nbsp;&nbsp;25年实时剩余经费：<a href="#" class="rules-link">查看</a><br>
+        <strong style="color:#d48806;">&#9888; 将在2027年3月1日零点清空26年预算余额</strong>
+        <br>
         预算按在职人数计算，入职当月起发放，离职次月停发；每月1日发放当月费用<br>
         提单优先扣减上年结转预算，再扣本年预算；活动费用可通过日常报销、对公付款单提交<br>
         <span style="color:#646a73;">如需了解更多，请前往使用手册：<a href="#" class="rules-link">部门活动经费使用文档</a></span>
@@ -676,11 +676,24 @@
     <!-- Tab 2: Personal Budget -->
     <div class="tab-panel" id="tab-personal">
       <div class="table-toolbar">
-        <div class="toolbar-right" style="margin-left:auto;">
-          <label class="toggle-label">
-            显示已离职
-            <span class="toggle-switch" onclick="this.classList.toggle('on')"></span>
-          </label>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="font-size:13px; color:#646a73;">人员:</span>
+          <div style="position:relative;" id="personFilterWrap">
+            <div style="display:flex; align-items:center; gap:6px; padding:5px 10px; border:1px solid #d0d3d6; border-radius:6px; background:#fff; min-width:180px;">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#8f959e" stroke-width="1.5"/><path d="M9.5 9.5L12.5 12.5" stroke="#8f959e" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input type="text" id="personSearchInput" placeholder="搜索姓名..." oninput="filterPersonRows()" style="border:none; outline:none; font-size:13px; width:100%; background:transparent;">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; margin-left:16px;">
+          <span style="font-size:13px; color:#646a73;">状态:</span>
+          <select class="filter-select" id="personStatusFilter" onchange="filterPersonRows()" style="min-width:100px;">
+            <option value="all">全部</option>
+            <option value="在职" selected>在职</option>
+            <option value="已离职">已离职</option>
+          </select>
+        </div>
+        <div style="margin-left:auto;">
           <button class="btn btn-default" style="font-size:12px;">导出</button>
         </div>
       </div>
@@ -1647,72 +1660,52 @@ function toggleExpand(row) {
   }
 }
 
-var comboData = {
-  '部门': ['全部部门','25届夏令营','42 项目组','社交游戏项目组','人力资源','青藤之恋项目组','贪吃蛇项目组','财务','财务&法务&游戏出版','采购','测试支持团队'],
-  '人员': ['全部人员','张伟','李婷','王磊','孙明','赵芳','陈刚','周洁','吴强','郑丽','刘涛']
-};
-var comboType = '部门';
-var comboValue = '全部部门';
-
-function renderComboOptions(keyword) {
-  var list = document.getElementById('comboOptionsList');
-  var items = comboData[comboType] || [];
-  var kw = (keyword || '').toLowerCase();
-  list.innerHTML = '';
-  items.forEach(function(name) {
-    if (kw && name.toLowerCase().indexOf(kw) === -1) return;
-    var div = document.createElement('div');
-    div.className = 'dept-opt' + (name === comboValue ? ' selected' : '');
-    div.textContent = name;
-    div.onmousedown = function() { selectComboValue(name, div); };
-    list.appendChild(div);
+function filterPersonRows() {
+  var keyword = document.getElementById('personSearchInput').value.toLowerCase();
+  var status = document.getElementById('personStatusFilter').value;
+  document.querySelectorAll('#tab-personal tbody tr').forEach(function(row) {
+    var nameCell = row.querySelector('td:first-child');
+    var statusCell = row.querySelector('td:nth-child(3)');
+    if (!nameCell) return;
+    var name = nameCell.textContent.toLowerCase();
+    var rowStatus = statusCell ? statusCell.textContent.trim() : '';
+    var nameMatch = !keyword || name.indexOf(keyword) !== -1;
+    var statusMatch = status === 'all' || rowStatus === status;
+    row.style.display = nameMatch && statusMatch ? '' : 'none';
   });
 }
 
-function toggleComboType() {
-  var dd = document.getElementById('comboTypeDropdown');
+function toggleDeptDropdown() {
+  var dd = document.getElementById('deptDropdown');
   dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
-  document.getElementById('comboValueDropdown').style.display = 'none';
-}
-
-function selectComboType(type, el) {
-  comboType = type;
-  document.getElementById('comboTypeLabel').textContent = type;
-  document.getElementById('comboTypeDropdown').style.display = 'none';
-  document.querySelectorAll('#comboTypeDropdown .dept-opt').forEach(function(o) { o.classList.remove('selected'); });
-  if (el) el.classList.add('selected');
-  comboValue = comboData[type][0];
-  document.getElementById('comboValueLabel').textContent = comboValue;
-}
-
-function toggleComboValue() {
-  var dd = document.getElementById('comboValueDropdown');
-  document.getElementById('comboTypeDropdown').style.display = 'none';
-  if (dd.style.display === 'none') {
-    dd.style.display = 'block';
-    document.getElementById('comboSearchInput').value = '';
-    renderComboOptions();
-    document.getElementById('comboSearchInput').focus();
-  } else {
-    dd.style.display = 'none';
+  if (dd.style.display === 'block') {
+    document.getElementById('deptSearchInput').focus();
   }
 }
 
-function filterComboOptions() {
-  renderComboOptions(document.getElementById('comboSearchInput').value);
+function filterDeptOptions() {
+  var keyword = document.getElementById('deptSearchInput').value.toLowerCase();
+  document.querySelectorAll('#deptOptionsList .dept-opt').forEach(function(opt) {
+    var text = opt.textContent.toLowerCase();
+    opt.classList.toggle('hidden', keyword && text.indexOf(keyword) === -1);
+  });
 }
 
-function selectComboValue(name) {
-  comboValue = name;
-  document.getElementById('comboValueLabel').textContent = name;
-  document.getElementById('comboValueDropdown').style.display = 'none';
+function selectDept(name, el) {
+  document.getElementById('deptValue').textContent = name;
+  document.getElementById('deptDropdown').style.display = 'none';
+  document.getElementById('deptSearchInput').value = '';
+  document.querySelectorAll('#deptOptionsList .dept-opt').forEach(function(o) {
+    o.classList.remove('selected', 'hidden');
+  });
+  if (el) el.classList.add('selected');
 }
 
 document.addEventListener('click', function(e) {
-  var combo = document.querySelector('.combo-filter');
-  if (combo && !combo.contains(e.target)) {
-    document.getElementById('comboTypeDropdown').style.display = 'none';
-    document.getElementById('comboValueDropdown').style.display = 'none';
+  var dd = document.getElementById('deptDropdown');
+  var trigger = document.getElementById('deptTrigger');
+  if (dd && !dd.contains(e.target) && !trigger.contains(e.target)) {
+    dd.style.display = 'none';
   }
 });
 </script>
