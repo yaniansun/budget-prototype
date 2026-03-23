@@ -372,7 +372,7 @@
       <div class="card-value">&#165;125,000</div>
       <div class="card-sub">
         <span>已使用 &#165;125,000</span>
-        <span>剩余 &#165;0</span>
+        <span>结转剩余 &#165;0</span>
       </div>
       <div class="progress-bar">
         <div class="progress-fill" style="width: 100%; background: #34c759;"></div>
@@ -638,6 +638,7 @@
               <th colspan="5" class="group-header">本年预算</th>
               <th colspan="2" class="group-header-purple">可用汇总</th>
               <th rowspan="2" class="text-center">已结转</th>
+              <th rowspan="2" class="text-center" style="min-width:80px;">操作</th>
             </tr>
             <tr>
               <th class="text-right" style="background:#f0fff4;">结转预算</th>
@@ -671,6 +672,7 @@
               <td class="text-right">0</td>
               <td class="text-right">1,200</td>
               <td class="text-center text-muted">否</td>
+              <td class="text-center"><button class="btn-text" onclick="openDetailModal(this)">查看详情</button></td>
             </tr>
             <tr>
               <td><a href="#" style="color:#3370ff; text-decoration:none;">96386f2g</a></td>
@@ -690,6 +692,7 @@
               <td class="text-right">300</td>
               <td class="text-right">1,500</td>
               <td class="text-center text-muted">否</td>
+              <td class="text-center"><button class="btn-text" onclick="openDetailModal(this)">查看详情</button></td>
             </tr>
             <tr>
               <td><a href="#" style="color:#3370ff; text-decoration:none;">8c17fed2</a></td>
@@ -709,6 +712,7 @@
               <td class="text-right">100</td>
               <td class="text-right">700</td>
               <td class="text-center text-muted">否</td>
+              <td class="text-center"><button class="btn-text" onclick="openDetailModal(this)">查看详情</button></td>
             </tr>
             <tr>
               <td><a href="#" style="color:#3370ff; text-decoration:none;">5f826gd3</a></td>
@@ -728,6 +732,7 @@
               <td class="text-right">500</td>
               <td class="text-right">1,700</td>
               <td class="text-center text-muted">否</td>
+              <td class="text-center"><button class="btn-text" onclick="openDetailModal(this)">查看详情</button></td>
             </tr>
             <tr style="opacity:0.5;">
               <td><a href="#" style="color:#3370ff; text-decoration:none;">59e6cc3d</a></td>
@@ -747,6 +752,7 @@
               <td class="text-right">0</td>
               <td class="text-right">0</td>
               <td class="text-center text-muted">否</td>
+              <td class="text-center"><button class="btn-text" onclick="openDetailModal(this)">查看详情</button></td>
             </tr>
           </tbody>
         </table>
@@ -1410,6 +1416,88 @@
   </div>
 </div>
 
+<!-- Modal: Personal Budget Detail -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" style="width:860px;">
+    <div class="modal-header">
+      <h2 id="detailTitle">个人预算明细 - 张三</h2>
+      <div class="modal-close" onclick="closeDetailModal()">&times;</div>
+    </div>
+    <div class="modal-body" style="padding:16px 24px;">
+      <div style="display:flex; gap:24px; margin-bottom:16px; font-size:13px; color:#646a73;">
+        <span>员工编号：<strong style="color:#1f2329;" id="detailEmpId">a88521ca</strong></span>
+        <span>部门：<strong style="color:#1f2329;" id="detailDept">社交游戏-游戏实验室</strong></span>
+        <span>预算科目：<strong style="color:#1f2329;" id="detailSubject">员工团建预算</strong></span>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+          <tr>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">时间</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">动账类型</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:right; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">金额</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:right; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb; white-space:nowrap;">余额</th>
+            <th style="background:#f7f8fa; padding:10px 12px; text-align:left; font-weight:500; color:#646a73; border-bottom:1px solid #e5e6eb;">备注</th>
+          </tr>
+        </thead>
+        <tbody id="detailTableBody">
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-03-18</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#fff2f0; color:#cf1322; border:1px solid #ffccc7;">消耗</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right; color:#ff4d4f;">-180.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">700.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">BX20260318005_项目庆功宴</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-03-01</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#f0f4ff; color:#2b5fd9; border:1px solid #bdd2ff;">发放</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">+150.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">880.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">人力成本-福利费/员工团建预算</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-02-25</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#f0fff4; color:#1d8348; border:1px solid #b7e4c7;">返还</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">+30.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">730.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">BX20260220003_团队活动</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-02-20</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#fff2f0; color:#cf1322; border:1px solid #ffccc7;">消耗</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right; color:#ff4d4f;">-120.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">700.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">BX20260220003_团队活动</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-02-01</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#f0f4ff; color:#2b5fd9; border:1px solid #bdd2ff;">发放</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">+150.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">820.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">人力成本-福利费/员工团建预算</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-01-15</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#fff2f0; color:#cf1322; border:1px solid #ffccc7;">消耗</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right; color:#ff4d4f;">-80.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">670.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">BX20260115001_部门聚餐</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; white-space:nowrap;">2026-01-01</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;"><span style="display:inline-block; padding:2px 10px; border-radius:4px; font-size:12px; background:#f0f4ff; color:#2b5fd9; border:1px solid #bdd2ff;">发放</span></td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">+150.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5; text-align:right;">750.00</td>
+            <td style="padding:10px 12px; border-bottom:1px solid #f0f1f5;">人力成本-福利费/员工团建预算</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeDetailModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Confirm -->
 <div class="modal-overlay" id="confirmModal" style="z-index:400;">
   <div class="modal" style="width:420px;">
@@ -1537,6 +1625,26 @@ function closeBudgetModal() {
 }
 document.getElementById('budgetModal').addEventListener('click', function(e) {
   if (e.target === this) closeBudgetModal();
+});
+
+function openDetailModal(btn) {
+  var row = btn.closest('tr');
+  var cells = row.querySelectorAll('td');
+  var empId = cells[0].textContent.trim();
+  var name = cells[1].textContent.trim();
+  var dept = cells[2].textContent.trim();
+  var subject = cells[5].textContent.trim();
+  document.getElementById('detailTitle').textContent = '个人预算明细 - ' + name;
+  document.getElementById('detailEmpId').textContent = empId;
+  document.getElementById('detailDept').textContent = dept;
+  document.getElementById('detailSubject').textContent = subject;
+  document.getElementById('detailModal').classList.add('visible');
+}
+function closeDetailModal() {
+  document.getElementById('detailModal').classList.remove('visible');
+}
+document.getElementById('detailModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDetailModal();
 });
 
 function openConfirmModal(title, message, onConfirm) {
