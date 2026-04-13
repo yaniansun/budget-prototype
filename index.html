@@ -1877,8 +1877,29 @@ function switchPage(page, el) {
   document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
-  el.classList.add('active');
+  if (el) el.classList.add('active');
+  window.location.hash = page;
 }
+
+// Hash-based routing: map hash to page and sidebar item
+(function() {
+  var pageMap = {
+    'report':   '[onclick="switchPage(\'report\', this)"]',
+    'planning': '[onclick="switchPage(\'planning\', this)"]',
+    'payment':  '[onclick="switchPage(\'payment\', this)"]'
+  };
+  function activateByHash() {
+    var hash = window.location.hash.replace('#', '') || 'report';
+    if (!document.getElementById('page-' + hash)) hash = 'report';
+    document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('page-' + hash).classList.add('active');
+    document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+    var sel = document.querySelector('.sidebar-item' + (pageMap[hash] || ''));
+    if (sel) sel.classList.add('active');
+  }
+  window.addEventListener('hashchange', activateByHash);
+  document.addEventListener('DOMContentLoaded', activateByHash);
+})();
 
 function openBudgetModal(type) {
   document.getElementById('budgetModal').classList.add('visible');
