@@ -226,7 +226,24 @@
   #paymentTable tbody td:last-child { background: #fff; }
   #paymentTable tbody tr:hover td:last-child { background: #f7f8fa; }
   /* Batch action bar */
+  /* Payment filter inline-label style */
+  .pf-item { display:flex; align-items:center; border:1px solid #e5e6eb; border-radius:4px; height:36px; overflow:hidden; background:#fff; }
+  .pf-label { padding:0 10px; color:#8f959e; font-size:12px; white-space:nowrap; border-right:1px solid #e5e6eb; height:100%; display:flex; align-items:center; flex-shrink:0; }
+  .pf-ctrl { border:none; outline:none; flex:1; padding:0 8px; font-size:13px; color:#1d2129; background:transparent; height:100%; min-width:0; }
+  .pf-date-range { display:flex; align-items:center; flex:1; min-width:0; padding:0 6px; gap:4px; }
+  .pf-date { border:none; outline:none; font-size:12px; color:#1d2129; background:transparent; min-width:0; width:0; flex:1; }
+  .pf-date::placeholder { color:#c9cdd4; }
+  .pf-arrow { color:#c9cdd4; font-size:12px; flex-shrink:0; }
+  .pf-cal-icon { flex-shrink:0; margin-right:8px; }
+  .pf-time-menu { position:absolute; top:calc(100% + 4px); left:0; background:#fff; border:1px solid #e5e6eb; border-radius:4px; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:50; min-width:130px; padding:4px 0; }
+  .pf-time-opt { padding:8px 14px; font-size:13px; color:#1d2129; cursor:pointer; }
+  .pf-time-opt:hover { background:#f5f6f7; }
+  .pf-time-opt.active { background:#f0f4ff; color:#3370ff; font-weight:500; }
   .payment-batch-bar { display:none; align-items:center; gap:12px; padding:10px 20px; background:#f0f4ff; border-bottom:1px solid #d6e4ff; font-size:13px; }
+  .status-with-tip { position:relative; display:inline-flex; align-items:center; gap:4px; }
+  .status-error-icon { color:#ff4d4f; font-size:13px; cursor:default; line-height:1; }
+  .status-error-icon::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.75); color:#fff; font-size:12px; padding:5px 10px; border-radius:4px; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity 0.15s; z-index:20; }
+  .status-error-icon:hover::after { opacity:1; }
   .payment-batch-bar.visible { display:flex; }
   .payment-batch-bar .batch-info { color:#3370ff; font-weight:500; margin-right:4px; }
   /* Row selected highlight */
@@ -335,10 +352,10 @@
   <div class="sidebar-section">
     <div class="sidebar-section-title" style="cursor:pointer;">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="#646a73" stroke-width="1.5"/><path d="M1.5 6.5h13" stroke="#646a73" stroke-width="1.5"/><path d="M4.5 9.5h3M9.5 9.5h2" stroke="#646a73" stroke-width="1.5" stroke-linecap="round"/></svg>
-      付款工作台
+      劳务费付款
     </div>
   </div>
-  <div class="sidebar-item" onclick="switchPage('payment', this)">付款工作台</div>
+  <div class="sidebar-item" onclick="switchPage('payment', this)">劳务费付款</div>
 </div>
 
 <!-- Page Body -->
@@ -1244,24 +1261,54 @@
   </div>
   </div>
 
-  <!-- Page: 付款工作台 -->
+  <!-- Page: 劳务费付款 -->
   <div class="page-section" id="page-payment">
   <div class="page-header">
-    <h1>付款工作台</h1>
+    <h1>劳务费付款</h1>
   </div>
   <div class="main">
-    <div class="filter-area">
-      <div class="filter-row">
-        <div class="filter-group">
-          <span class="filter-label">来源单据:</span>
-          <input type="text" class="filter-input" placeholder="请输入" style="min-width:120px;" readonly>
+    <div class="filter-area" style="padding:12px 20px 0;">
+      <!-- Row 1: 收款账户名称 | 创建人 | 单号（切换） | 支付渠道 -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:8px;">
+        <div class="pf-item"><span class="pf-label">收款账户名称</span><select class="pf-ctrl"><option value="">请选择</option><option>NGUYEN THI NGOC THU</option><option>Think Velo HEU</option><option>Pilnao</option><option>Emanuele Busciolini</option></select></div>
+        <div class="pf-item"><span class="pf-label">创建人</span><select class="pf-ctrl"><option value="">请选择</option><option>孟佳</option><option>张三</option><option>王五</option></select></div>
+        <!-- Combined switchable number search -->
+        <div class="pf-item" style="position:relative;">
+          <span class="pf-label" style="cursor:pointer; user-select:none;" onclick="toggleNoTypeMenu(event)">
+            <span id="pfNoTypeName">来源单号</span>
+            <svg style="margin-left:4px;" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#646a73" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <input type="text" id="pfNoInput" class="pf-ctrl" placeholder="请输入">
+          <div id="pfNoTypeMenu" class="pf-time-menu" style="display:none;">
+            <div class="pf-time-opt active" onclick="selectNoType(this,'来源单号')">来源单号</div>
+            <div class="pf-time-opt" onclick="selectNoType(this,'付款批次号')">付款批次号</div>
+            <div class="pf-time-opt" onclick="selectNoType(this,'付款流水号')">付款流水号</div>
+          </div>
         </div>
-        <div class="filter-group">
-          <span class="filter-label">来源单号:</span>
-          <input type="text" class="filter-input" placeholder="请输入" style="min-width:120px;" readonly>
+        <div class="pf-item"><span class="pf-label">支付渠道</span><select class="pf-ctrl"><option value="">全部</option><option>银行转账</option><option>PayerMax</option><option>Paypal</option></select></div>
+      </div>
+      <!-- Row 2: 时间（切换×2cols）| 支付场景 | 按钮 -->
+      <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:8px; padding-bottom:12px; align-items:center;">
+        <!-- Combined switchable time filter -->
+        <div class="pf-item pf-time-wrap" style="position:relative;">
+          <span class="pf-label pf-time-label" style="cursor:pointer; user-select:none;" onclick="toggleTimeTypeMenu(event)">
+            <span id="pfTimeTypeName">创建时间</span>
+            <svg style="margin-left:4px;" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#646a73" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="pf-date-range" style="flex:1;">
+            <input type="date" id="pfTimeStart" class="pf-date" placeholder="开始时间">
+            <span class="pf-arrow">—</span>
+            <input type="date" id="pfTimeEnd" class="pf-date" placeholder="结束时间">
+          </span>
+          <svg class="pf-cal-icon" width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="13" rx="2" stroke="#c9cdd4" stroke-width="1.2"/><path d="M5 1v2M11 1v2M1 6h14" stroke="#c9cdd4" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <div id="pfTimeTypeMenu" class="pf-time-menu" style="display:none;">
+            <div class="pf-time-opt active" onclick="selectTimeType(this,'创建时间')">创建时间</div>
+            <div class="pf-time-opt" onclick="selectTimeType(this,'提交付款时间')">提交付款时间</div>
+            <div class="pf-time-opt" onclick="selectTimeType(this,'付款完成时间')">付款完成时间</div>
+          </div>
         </div>
-        <div style="margin-left:auto; display:flex; gap:8px;">
-          <button class="btn btn-default">筛选</button>
+        <div class="pf-item"><span class="pf-label">支付场景</span><select class="pf-ctrl"><option value="">全部</option><option>线上</option><option>线下</option></select></div>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
           <button class="btn btn-default">重置</button>
           <button class="btn btn-primary">查询</button>
         </div>
@@ -1277,16 +1324,12 @@
           <div class="content-tab" style="padding:14px 16px;">付款退票 <span style="font-size:11px; color:#8f959e;">(8)</span></div>
           <div class="content-tab" style="padding:14px 16px;">付款成功 <span style="font-size:11px; color:#8f959e;">(66)</span></div>
         </div>
-        <button class="btn btn-default" style="font-size:12px;">附列</button>
+        <button class="btn btn-default" style="font-size:12px;" onclick="openImportModal()">导入</button>
       </div>
       <!-- Batch action bar -->
       <div class="payment-batch-bar" id="paymentBatchBar">
         <span class="batch-info">已选 <span id="batchCount">0</span> 条</span>
         <button class="btn btn-primary" style="font-size:12px;" onclick="openPaymentConfirm()">付款</button>
-        <button class="btn btn-default" style="font-size:12px;">驳回</button>
-        <button class="btn btn-default" style="font-size:12px;">终止</button>
-        <button class="btn btn-default" style="font-size:12px;">修改支付渠道</button>
-        <button class="btn btn-default" style="font-size:12px;">修改付款日期</button>
         <button class="btn btn-default" style="font-size:12px;">导出</button>
         <span style="margin-left:auto; color:#8f959e; cursor:pointer; font-size:18px; line-height:1;" onclick="clearPaymentSelection()">×</span>
       </div>
@@ -1347,7 +1390,7 @@
               <td>加速</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款中" data-entity="Oaxis Tech T-2 LLC." data-amount="100.00" data-currency="USD">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1374,7 +1417,7 @@
               <td>李四</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text">撤销付款</button><button class="btn-text">变更状态</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="41500" data-currency="JPY">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1401,7 +1444,7 @@
               <td>王五</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="4577.38" data-currency="USD">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1428,7 +1471,7 @@
               <td>张三</td>
               <td>2026-04-12 08:58</td>
               <td>1</td>
-              <td><button class="btn-text">退票</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
             <tr data-status="付款失败" data-entity="WELOY PTE. LTD." data-amount="700000" data-currency="VND"
                 data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000070"
@@ -1437,7 +1480,7 @@
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200037</a></td>
               <td>费用报账</td>
-              <td><span class="status-tag" style="background:#fff2f0; color:#ff4d4f;">付款失败</span></td>
+              <td><span class="status-with-tip"><span class="status-tag" style="background:#fff2f0; color:#ff4d4f;">付款失败</span><span class="status-error-icon" data-tip="收款账户信息有误，请核实后重新提交">ⓘ</span></span></td>
               <td>PaperMax</td>
               <td>2026-04-02 12:25:36</td>
               <td>WELOY PTE. LTD.</td>
@@ -1458,7 +1501,7 @@
               <td>孟佳</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款退票" data-entity="WELOY PTE. LTD." data-amount="4000000" data-currency="VND"
                 data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000070"
@@ -1467,7 +1510,7 @@
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200038</a></td>
               <td>费用报账</td>
-              <td><span class="status-tag" style="background:#fff8e6; color:#d48806;">付款退票</span></td>
+              <td><span class="status-with-tip"><span class="status-tag" style="background:#fff8e6; color:#d48806;">付款退票</span><span class="status-error-icon" data-tip="银行退票：收款行拒绝入账，原因：账户已注销" style="color:#d48806;">ⓘ</span></span></td>
               <td>PaperMax</td>
               <td>2026-04-02 16:32:14</td>
               <td>WELOY PTE. LTD.</td>
@@ -1488,7 +1531,7 @@
               <td>孟佳</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
             <tr data-status="付款中" data-entity="WELOY PTE. LTD." data-amount="2406.54" data-currency="GBP">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1515,7 +1558,7 @@
               <td>孟佳</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text">撤销付款</button><button class="btn-text">变更状态</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="580.00" data-currency="EUR">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1542,7 +1585,7 @@
               <td>孟佳</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text">退票</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
           </tbody>
         </table>
@@ -1862,6 +1905,30 @@
     <div class="modal-footer">
       <button class="btn btn-default" onclick="closeRePayModal()">取消</button>
       <button class="btn btn-primary" onclick="closeRePayModal()">确认付款</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Import -->
+<div class="modal-overlay" id="importModal" style="z-index:500;">
+  <div class="modal" style="width:420px;">
+    <div class="modal-header">
+      <h2>导入回款</h2>
+      <div class="modal-close" onclick="closeImportModal()">&times;</div>
+    </div>
+    <div class="modal-body" style="padding:24px 24px 16px;">
+      <label style="display:inline-flex; align-items:center; gap:8px; border:1px solid #e5e6eb; border-radius:4px; padding:8px 16px; cursor:pointer; font-size:13px; color:#1d2129;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 5l3-3 3 3" stroke="#1d2129" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11v1.5A1.5 1.5 0 003.5 14h9a1.5 1.5 0 001.5-1.5V11" stroke="#1d2129" stroke-width="1.5" stroke-linecap="round"/></svg>
+        选择文件
+        <input type="file" style="display:none;" accept=".xlsx,.xls,.csv">
+      </label>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between;">
+      <a href="#" style="font-size:13px; color:#3370ff; text-decoration:none;">下载导入模版</a>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-default" onclick="closeImportModal()">取 消</button>
+        <button class="btn btn-primary" onclick="closeImportModal()">确 定</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2263,6 +2330,47 @@ function closePaymentConfirm() {
   document.getElementById('paymentConfirmModal').classList.remove('visible');
 }
 
+function openImportModal() {
+  document.getElementById('importModal').classList.add('visible');
+}
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('visible');
+}
+
+function toggleTimeTypeMenu(e) {
+  e.stopPropagation();
+  var menu = document.getElementById('pfTimeTypeMenu');
+  document.getElementById('pfNoTypeMenu').style.display = 'none';
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+function selectTimeType(el, name) {
+  document.getElementById('pfTimeTypeName').textContent = name;
+  el.closest('.pf-time-menu').querySelectorAll('.pf-time-opt').forEach(function(o) { o.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('pfTimeStart').value = '';
+  document.getElementById('pfTimeEnd').value = '';
+  document.getElementById('pfTimeTypeMenu').style.display = 'none';
+}
+function toggleNoTypeMenu(e) {
+  e.stopPropagation();
+  var menu = document.getElementById('pfNoTypeMenu');
+  document.getElementById('pfTimeTypeMenu').style.display = 'none';
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+function selectNoType(el, name) {
+  document.getElementById('pfNoTypeName').textContent = name;
+  el.closest('.pf-time-menu').querySelectorAll('.pf-time-opt').forEach(function(o) { o.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('pfNoInput').value = '';
+  document.getElementById('pfNoTypeMenu').style.display = 'none';
+}
+document.addEventListener('click', function() {
+  var m1 = document.getElementById('pfTimeTypeMenu');
+  var m2 = document.getElementById('pfNoTypeMenu');
+  if (m1) m1.style.display = 'none';
+  if (m2) m2.style.display = 'none';
+});
+
 function openRePayModal(btn) {
   var tr = btn.closest('tr');
   var origInfo = document.getElementById('rePayOrigInfo');
@@ -2317,6 +2425,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.getElementById('rePayModal').addEventListener('click', function(e) {
     if (e.target === this) closeRePayModal();
+  });
+  document.getElementById('importModal').addEventListener('click', function(e) {
+    if (e.target === this) closeImportModal();
   });
 });
 </script>
