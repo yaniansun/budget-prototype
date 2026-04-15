@@ -202,31 +202,35 @@
   .page-section { display: none; }
   .page-section.active { display: block; }
 
-  /* Sticky first column for payment table */
+  /* Sticky columns for payment table */
   #paymentTable { border-collapse: separate; border-spacing: 0; }
   #paymentTable thead th,
   #paymentTable tbody td { border-bottom: 1px solid #f0f1f5; }
   #paymentTable thead th { border-bottom: 1px solid #e5e6eb; }
+  /* col1: checkbox */
   #paymentTable thead th:first-child,
-  #paymentTable tbody td:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 2;
-    box-shadow: 2px 0 4px -2px rgba(0,0,0,0.12);
-  }
+  #paymentTable tbody td:first-child { position: sticky; left: 0; z-index: 2; width: 40px; min-width: 40px; text-align: center; }
   #paymentTable thead th:first-child { background: #f7f8fa; z-index: 3; }
   #paymentTable tbody td:first-child { background: #fff; }
   #paymentTable tbody tr:hover td:first-child { background: #f7f8fa; }
+  /* col2: 来源单据号 */
+  #paymentTable thead th:nth-child(2),
+  #paymentTable tbody td:nth-child(2) { position: sticky; left: 40px; z-index: 2; box-shadow: 2px 0 4px -2px rgba(0,0,0,0.12); }
+  #paymentTable thead th:nth-child(2) { background: #f7f8fa; z-index: 3; }
+  #paymentTable tbody td:nth-child(2) { background: #fff; }
+  #paymentTable tbody tr:hover td:nth-child(2) { background: #f7f8fa; }
+  /* last col: 操作 */
   #paymentTable thead th:last-child,
-  #paymentTable tbody td:last-child {
-    position: sticky;
-    right: 0;
-    z-index: 2;
-    box-shadow: -2px 0 4px -2px rgba(0,0,0,0.12);
-  }
+  #paymentTable tbody td:last-child { position: sticky; right: 0; z-index: 2; box-shadow: -2px 0 4px -2px rgba(0,0,0,0.12); }
   #paymentTable thead th:last-child { background: #f7f8fa; z-index: 3; }
   #paymentTable tbody td:last-child { background: #fff; }
   #paymentTable tbody tr:hover td:last-child { background: #f7f8fa; }
+  /* Batch action bar */
+  .payment-batch-bar { display:none; align-items:center; gap:12px; padding:10px 20px; background:#f0f4ff; border-bottom:1px solid #d6e4ff; font-size:13px; }
+  .payment-batch-bar.visible { display:flex; }
+  .payment-batch-bar .batch-info { color:#3370ff; font-weight:500; margin-right:4px; }
+  /* Row selected highlight */
+  #paymentTable tbody tr.row-selected td { background:#f0f4ff !important; }
 
   /* Budget Planning Table */
   .planning-table { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
@@ -1275,10 +1279,22 @@
         </div>
         <button class="btn btn-default" style="font-size:12px;">附列</button>
       </div>
+      <!-- Batch action bar -->
+      <div class="payment-batch-bar" id="paymentBatchBar">
+        <span class="batch-info">已选 <span id="batchCount">0</span> 条</span>
+        <button class="btn btn-primary" style="font-size:12px;" onclick="openPaymentConfirm()">付款</button>
+        <button class="btn btn-default" style="font-size:12px;">驳回</button>
+        <button class="btn btn-default" style="font-size:12px;">终止</button>
+        <button class="btn btn-default" style="font-size:12px;">修改支付渠道</button>
+        <button class="btn btn-default" style="font-size:12px;">修改付款日期</button>
+        <button class="btn btn-default" style="font-size:12px;">导出</button>
+        <span style="margin-left:auto; color:#8f959e; cursor:pointer; font-size:18px; line-height:1;" onclick="clearPaymentSelection()">×</span>
+      </div>
       <div class="table-wrapper">
         <table id="paymentTable">
           <thead>
             <tr>
+              <th><input type="checkbox" id="paySelectAll" onchange="togglePaySelectAll(this)"></th>
               <th style="min-width:160px;">来源单据号</th>
               <th style="min-width:100px;">单据类型</th>
               <th style="min-width:110px;">付款状态</th>
@@ -1306,7 +1322,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="330.19" data-currency="USD">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040100057</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#fff7e6; color:#ff9500;">待付款</span></td>
@@ -1332,7 +1349,8 @@
               <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="付款中" data-entity="Oaxis Tech T-2 LLC." data-amount="100.00" data-currency="USD">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040100054</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">付款中</span></td>
@@ -1358,7 +1376,8 @@
               <td class="text-muted">-</td>
               <td><button class="btn-text">撤销付款</button><button class="btn-text">变更状态</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="41500" data-currency="JPY">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">TAO2026040200063</a></td>
               <td>客户退款</td>
               <td><span class="status-tag" style="background:#fff7e6; color:#ff9500;">待付款</span></td>
@@ -1384,7 +1403,8 @@
               <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="4577.38" data-currency="USD">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200027</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#f0fff4; color:#34c759;">付款成功</span></td>
@@ -1410,7 +1430,8 @@
               <td>1</td>
               <td><button class="btn-text">退票</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="付款失败" data-entity="WELOY PTE. LTD." data-amount="700000" data-currency="VND">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200037</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#fff2f0; color:#ff4d4f;">付款失败</span></td>
@@ -1436,7 +1457,8 @@
               <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="付款退票" data-entity="WELOY PTE. LTD." data-amount="4000000" data-currency="VND">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200038</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#fff8e6; color:#d48806;">付款退票</span></td>
@@ -1462,7 +1484,8 @@
               <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="付款中" data-entity="WELOY PTE. LTD." data-amount="2406.54" data-currency="GBP">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200046</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">付款中</span></td>
@@ -1488,7 +1511,8 @@
               <td class="text-muted">-</td>
               <td><button class="btn-text">撤销付款</button><button class="btn-text">变更状态</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr>
+            <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="580.00" data-currency="EUR">
+              <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200003</a></td>
               <td>费用报账</td>
               <td><span class="status-tag" style="background:#f0fff4; color:#34c759;">付款成功</span></td>
@@ -1782,6 +1806,33 @@
   </div>
 </div>
 
+<!-- Modal: Payment Confirm -->
+<div class="modal-overlay" id="paymentConfirmModal" style="z-index:500;">
+  <div class="modal" style="width:480px;">
+    <div class="modal-header">
+      <h2>确认付款</h2>
+      <div class="modal-close" onclick="closePaymentConfirm()">&times;</div>
+    </div>
+    <div class="modal-body">
+      <p id="payConfirmDesc" style="font-size:14px; color:#1f2329; margin-bottom:16px;"></p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+          <tr>
+            <th style="background:#f7f8fa; padding:8px 12px; text-align:left; border:1px solid #e5e6eb; color:#646a73; font-weight:500;">付款主体</th>
+            <th style="background:#f7f8fa; padding:8px 12px; text-align:center; border:1px solid #e5e6eb; color:#646a73; font-weight:500;">笔数</th>
+            <th style="background:#f7f8fa; padding:8px 12px; text-align:right; border:1px solid #e5e6eb; color:#646a73; font-weight:500;">金额</th>
+          </tr>
+        </thead>
+        <tbody id="payConfirmBody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closePaymentConfirm()">取消</button>
+      <button class="btn btn-primary" onclick="closePaymentConfirm()">确认付款</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Confirm -->
 <div class="modal-overlay" id="confirmModal" style="z-index:400;">
   <div class="modal" style="width:420px;">
@@ -2063,6 +2114,102 @@ document.addEventListener('click', function(e) {
   if (dd && !dd.contains(e.target) && !trigger.contains(e.target)) {
     dd.style.display = 'none';
   }
+});
+
+// ---- Payment workbench: checkbox & batch actions ----
+function updateBatchBar() {
+  var checked = document.querySelectorAll('#paymentTable .pay-row-check:checked');
+  var bar = document.getElementById('paymentBatchBar');
+  var countEl = document.getElementById('batchCount');
+  if (checked.length > 0) {
+    bar.classList.add('visible');
+    countEl.textContent = checked.length;
+  } else {
+    bar.classList.remove('visible');
+  }
+  // update select-all state
+  var all = document.querySelectorAll('#paymentTable .pay-row-check');
+  var selectAll = document.getElementById('paySelectAll');
+  if (selectAll) {
+    selectAll.checked = all.length > 0 && checked.length === all.length;
+    selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
+  }
+  // highlight rows
+  document.querySelectorAll('#paymentTable tbody tr').forEach(function(tr) {
+    var cb = tr.querySelector('.pay-row-check');
+    if (cb) tr.classList.toggle('row-selected', cb.checked);
+  });
+}
+
+function togglePaySelectAll(cb) {
+  document.querySelectorAll('#paymentTable .pay-row-check').forEach(function(c) { c.checked = cb.checked; });
+  updateBatchBar();
+}
+
+function clearPaymentSelection() {
+  document.querySelectorAll('#paymentTable .pay-row-check').forEach(function(c) { c.checked = false; });
+  var sa = document.getElementById('paySelectAll');
+  if (sa) { sa.checked = false; sa.indeterminate = false; }
+  updateBatchBar();
+}
+
+function openPaymentConfirm() {
+  var rows = document.querySelectorAll('#paymentTable tbody tr');
+  // only 待付款 rows that are checked
+  var selected = [];
+  rows.forEach(function(tr) {
+    var cb = tr.querySelector('.pay-row-check');
+    if (cb && cb.checked && tr.dataset.status === '待付款') selected.push(tr);
+  });
+  if (selected.length === 0) {
+    alert('请选择状态为「待付款」的记录');
+    return;
+  }
+  // group by entity + currency
+  var groups = {};
+  selected.forEach(function(tr) {
+    var key = tr.dataset.entity + '||' + tr.dataset.currency;
+    if (!groups[key]) groups[key] = { entity: tr.dataset.entity, currency: tr.dataset.currency, count: 0, total: 0 };
+    groups[key].count++;
+    groups[key].total += parseFloat(tr.dataset.amount) || 0;
+  });
+  // build description (use first group's currency for summary if single currency)
+  var totalCount = selected.length;
+  var keys = Object.keys(groups);
+  var descAmounts = keys.map(function(k) {
+    var g = groups[k];
+    return g.currency + ' ' + g.total.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }).join('、');
+  document.getElementById('payConfirmDesc').textContent =
+    '共' + totalCount + '笔付款，合计付款金额' + descAmounts + '，确认提交付款？';
+  // build table rows
+  var tbody = document.getElementById('payConfirmBody');
+  tbody.innerHTML = '';
+  keys.forEach(function(k) {
+    var g = groups[k];
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td style="padding:8px 12px; border:1px solid #e5e6eb;">' + g.entity + '</td>' +
+      '<td style="padding:8px 12px; border:1px solid #e5e6eb; text-align:center;">' + g.count + '</td>' +
+      '<td style="padding:8px 12px; border:1px solid #e5e6eb; text-align:right;">' +
+        g.currency + ' ' + g.total.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
+      '</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('paymentConfirmModal').classList.add('visible');
+}
+
+function closePaymentConfirm() {
+  document.getElementById('paymentConfirmModal').classList.remove('visible');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('paymentTable').addEventListener('change', function(e) {
+    if (e.target.classList.contains('pay-row-check')) updateBatchBar();
+  });
+  document.getElementById('paymentConfirmModal').addEventListener('click', function(e) {
+    if (e.target === this) closePaymentConfirm();
+  });
 });
 </script>
 
