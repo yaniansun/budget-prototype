@@ -1339,138 +1339,113 @@
             <tr>
               <th><input type="checkbox" id="paySelectAll" onchange="togglePaySelectAll(this)"></th>
               <th style="min-width:160px;">来源单据号</th>
-              <th style="min-width:100px;">单据类型</th>
-              <th style="min-width:110px;">付款状态</th>
-              <th style="min-width:100px;">支付渠道</th>
-              <th style="min-width:160px;">支付时间</th>
               <th style="min-width:180px;">付款主体</th>
-              <th style="min-width:120px;">额度使用时间</th>
-              <th style="min-width:140px;">付款供应商编号</th>
-              <th style="min-width:160px;">付款供应商名称</th>
-              <th style="min-width:140px;">收款供应商编号</th>
-              <th style="min-width:180px;">收款供应商名称</th>
-              <th style="min-width:160px;">收款供应商号</th>
-              <th style="min-width:220px;">备注</th>
-              <th style="min-width:160px;">付款事项</th>
-              <th style="min-width:180px;">付款文号</th>
-              <th class="text-right" style="min-width:110px;">申请金额</th>
-              <th class="text-right" style="min-width:90px;">手续费</th>
+              <th style="min-width:180px;">付款账户名称</th>
               <th class="text-right" style="min-width:110px;">付款金额</th>
-              <th style="min-width:80px;">付款人</th>
-              <th style="min-width:160px;">创建时间</th>
+              <th style="min-width:70px;">币种</th>
+              <th style="min-width:180px;">收款账户名称</th>
+              <th style="min-width:140px;">收款账号</th>
+              <th style="min-width:120px;">Swiftcode</th>
+              <th style="min-width:160px;">备注</th>
+              <th style="min-width:160px;">付款批次号</th>
+              <th style="min-width:160px;">付款流水号</th>
+              <th style="min-width:110px;">支付渠道</th>
+              <th style="min-width:90px;">支付场景</th>
+              <th style="min-width:110px;">付款状态</th>
+              <th style="min-width:160px;">提交付款时间</th>
+              <th style="min-width:160px;">付款完成时间</th>
               <th style="min-width:80px;">创建人</th>
-              <th style="min-width:160px;">到账时间</th>
-              <th style="min-width:60px;">到账</th>
-              <th style="min-width:180px; position:sticky; right:0; background:#f7f8fa; z-index:3; box-shadow:-2px 0 4px -2px rgba(0,0,0,0.12);">操作</th>
+              <th style="min-width:160px;">创建时间</th>
+              <th style="min-width:160px; position:sticky; right:0; background:#f7f8fa; z-index:3; box-shadow:-2px 0 4px -2px rgba(0,0,0,0.12);">操作</th>
             </tr>
           </thead>
           <tbody>
-            <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="330.19" data-currency="USD">
+            <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="330.19" data-currency="USD" data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000008" data-recv-name="WANGCHENFEI" data-recv-no="ACC_0000576" data-swift="CITIUS33" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040100057</a></td>
-              <td>费用报账</td>
-              <td><span class="status-tag" style="background:#fff7e6; color:#ff9500;">待付款</span></td>
-              <td>银行划付</td>
-              <td>2026-04-10 14:16:38</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-03-19</td>
-              <td>ACC_0000008</td>
               <td>WELOY PTE. LTD.</td>
-              <td>ACC_0000576</td>
+              <td class="text-right">330.19</td>
+              <td>USD</td>
               <td>WANGCHENFEI</td>
-              <td>44643966</td>
-              <td>FYS2026040100060001</td>
-              <td>薪资结算</td>
+              <td>ACC_0000576</td>
+              <td>CITIUS33</td>
+              <td class="text-muted">-</td>
               <td>FYS20260401_001</td>
-              <td class="text-right">USD 330.19</td>
-              <td class="text-right">USD 0.00</td>
-              <td class="text-right" style="font-weight:600;">USD 330.19</td>
-              <td>孟佳</td>
-              <td>2026-04-10 17:10:01</td>
+              <td class="text-muted">-</td>
+              <td>银行转账</td>
+              <td>线上</td>
+              <td><span class="status-tag" style="background:#fff7e6; color:#ff9500;">待付款</span></td>
+              <td>2026-04-10 14:16:38</td>
+              <td class="text-muted">-</td>
               <td>加速</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
+              <td>2026-04-10 17:10:01</td>
               <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">数据日志</button></td>
             </tr>
-            <tr data-status="付款中" data-entity="Oaxis Tech T-2 LLC." data-amount="100.00" data-currency="USD">
+            <tr data-status="付款中" data-entity="Oaxis Tech T-2 LLC." data-amount="100.00" data-currency="USD" data-pay-acct-name="Oaxis Tech T-2 LLC." data-pay-acct-no="ACC_0000070" data-recv-name="Evangelina Baht Luvco" data-recv-no="ACC_0000076" data-swift="BKCIVNVX" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040100054</a></td>
-              <td>费用报账</td>
-              <td><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">付款中</span></td>
-              <td>PaperMax</td>
-              <td>2026-04-10 14:12:49</td>
               <td>Oaxis Tech T-2 LLC.</td>
-              <td>2026-03-18</td>
-              <td>ACC_0000070</td>
-              <td>Pilnao</td>
-              <td>ACC_0000076</td>
+              <td>Oaxis Tech T-2 LLC.</td>
+              <td class="text-right">100.00</td>
+              <td>USD</td>
               <td>Evangelina Baht Luvco</td>
-              <td>21547896</td>
-              <td>-</td>
-              <td>广告推广费</td>
+              <td>ACC_0000076</td>
+              <td>BKCIVNVX</td>
+              <td class="text-muted">-</td>
               <td>FYS20260401_002</td>
-              <td class="text-right">USD 100.00</td>
-              <td class="text-right">USD 0.00</td>
-              <td class="text-right" style="font-weight:600;">USD 100.00</td>
-              <td>孟佳</td>
-              <td>2026-04-10 15:27:04</td>
+              <td>LWF20260410001</td>
+              <td>PayerMax</td>
+              <td>线上</td>
+              <td><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">付款中</span></td>
+              <td>2026-04-10 14:12:49</td>
+              <td class="text-muted">-</td>
               <td>李四</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
+              <td>2026-04-10 15:27:04</td>
               <td><button class="btn-text">数据日志</button></td>
             </tr>
-            <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="41500" data-currency="JPY">
+            <tr data-status="待付款" data-entity="WELOY PTE. LTD." data-amount="41500" data-currency="JPY" data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000008" data-recv-name="Hitoshi Watabe" data-recv-no="ACC_0000387" data-swift="MUFGJPJP" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">TAO2026040200063</a></td>
-              <td>客户退款</td>
-              <td><span class="status-tag" style="background:#fff7e6; color:#ff9500;">待付款</span></td>
-              <td>银行划付</td>
-              <td>2026-04-02 16:11:05</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-04-08</td>
-              <td>ACC_0000008</td>
               <td>WELOY PTE. LTD.</td>
-              <td>ACC_0000387</td>
+              <td class="text-right">41,500</td>
+              <td>JPY</td>
               <td>Hitoshi Watabe</td>
-              <td>53430481</td>
-              <td>-</td>
-              <td>客户退款</td>
+              <td>ACC_0000387</td>
+              <td>MUFGJPJP</td>
+              <td class="text-muted">-</td>
               <td>TAO20260402_001</td>
-              <td class="text-right">JPY 41,500</td>
-              <td class="text-right">JPY 0</td>
-              <td class="text-right" style="font-weight:600;">JPY 41,500</td>
+              <td class="text-muted">-</td>
+              <td>银行转账</td>
+              <td>线上</td>
+              <td><span class="status-tag" style="background:#fff7e6; color:#ff9500;">待付款</span></td>
+              <td>2026-04-02 16:11:05</td>
+              <td class="text-muted">-</td>
               <td>王五</td>
               <td>2026-04-15 08:46:58</td>
-              <td>王五</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">数据日志</button></td>
             </tr>
-            <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="4577.38" data-currency="USD">
+            <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="4577.38" data-currency="USD" data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000008" data-recv-name="Qui Beijing Music Co Ltd" data-recv-no="ACC_0000759" data-swift="ICBKCNBJ" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200027</a></td>
-              <td>费用报账</td>
-              <td><span class="status-tag" style="background:#f0fff4; color:#34c759;">付款成功</span></td>
-              <td>银行划付</td>
-              <td>2026-04-02 10:45:22</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-04-08</td>
-              <td>ACC_0000008</td>
               <td>WELOY PTE. LTD.</td>
-              <td>ACC_0000759</td>
+              <td class="text-right">4,577.38</td>
+              <td>USD</td>
               <td>Qui Beijing Music Co Ltd</td>
-              <td>32567310</td>
-              <td>-</td>
-              <td>版权费用</td>
+              <td>ACC_0000759</td>
+              <td>ICBKCNBJ</td>
+              <td class="text-muted">-</td>
               <td>FYS20260402_001</td>
-              <td class="text-right">USD 4,577.38</td>
-              <td class="text-right">USD 0.00</td>
-              <td class="text-right" style="font-weight:600;">USD 4,577.38</td>
+              <td>LWF20260412001</td>
+              <td>银行转账</td>
+              <td>线上</td>
+              <td><span class="status-tag" style="background:#f0fff4; color:#34c759;">付款成功</span></td>
+              <td>2026-04-02 10:45:22</td>
+              <td>2026-04-12 08:58</td>
               <td>张三</td>
               <td>2026-04-11 17:51:31</td>
-              <td>张三</td>
-              <td>2026-04-12 08:58</td>
-              <td>1</td>
               <td><button class="btn-text">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
             <tr data-status="付款失败" data-entity="WELOY PTE. LTD." data-amount="700000" data-currency="VND"
@@ -1479,28 +1454,23 @@
                 data-swift="BKIDVNVX" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200037</a></td>
-              <td>费用报账</td>
-              <td><span class="status-with-tip"><span class="status-tag" style="background:#fff2f0; color:#ff4d4f;">付款失败</span><span class="status-error-icon" data-tip="收款账户信息有误，请核实后重新提交">ⓘ</span></span></td>
-              <td>PaperMax</td>
-              <td>2026-04-02 12:25:36</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-04-02</td>
-              <td>ACC_0000070</td>
-              <td>Pilnao</td>
-              <td>ACC_0000913</td>
+              <td>WELOY PTE. LTD.</td>
+              <td class="text-right">700,000</td>
+              <td>VND</td>
               <td>NGUYEN THI NGOC THU</td>
-              <td>22310531</td>
-              <td>-</td>
-              <td>运营费用</td>
+              <td>ACC_0000913</td>
+              <td>BKIDVNVX</td>
+              <td class="text-muted">-</td>
               <td>FYS20260402_002</td>
-              <td class="text-right">VND 700,000</td>
-              <td class="text-right">VND 0</td>
-              <td class="text-right" style="font-weight:600;">VND 700,000</td>
+              <td class="text-muted">-</td>
+              <td>PayerMax</td>
+              <td>线上</td>
+              <td><span class="status-with-tip"><span class="status-tag" style="background:#fff2f0; color:#ff4d4f;">付款失败</span><span class="status-error-icon" data-tip="收款账户信息有误，请核实后重新提交">ⓘ</span></span></td>
+              <td>2026-04-02 12:25:36</td>
+              <td class="text-muted">-</td>
               <td>孟佳</td>
               <td>2026-04-11 17:39:43</td>
-              <td>孟佳</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款退票" data-entity="WELOY PTE. LTD." data-amount="4000000" data-currency="VND"
@@ -1509,82 +1479,67 @@
                 data-swift="VIETINBK" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200038</a></td>
-              <td>费用报账</td>
-              <td><span class="status-with-tip"><span class="status-tag" style="background:#fff8e6; color:#d48806;">付款退票</span><span class="status-error-icon" data-tip="银行退票：收款行拒绝入账，原因：账户已注销" style="color:#d48806;">ⓘ</span></span></td>
-              <td>PaperMax</td>
-              <td>2026-04-02 16:32:14</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-04-02</td>
-              <td>ACC_0000070</td>
-              <td>Pilnao</td>
-              <td>ACC_0000821</td>
+              <td>WELOY PTE. LTD.</td>
+              <td class="text-right">4,000,000</td>
+              <td>VND</td>
               <td>Think Velo HEU</td>
-              <td>37500497</td>
-              <td>-</td>
-              <td>平台服务费</td>
+              <td>ACC_0000821</td>
+              <td>VIETINBK</td>
+              <td class="text-muted">-</td>
               <td>FYS20260402_003</td>
-              <td class="text-right">VND 4,000,000</td>
-              <td class="text-right">VND 0</td>
-              <td class="text-right" style="font-weight:600;">VND 4,000,000</td>
+              <td class="text-muted">-</td>
+              <td>PayerMax</td>
+              <td>线上</td>
+              <td><span class="status-with-tip"><span class="status-tag" style="background:#fff8e6; color:#d48806;">付款退票</span><span class="status-error-icon" data-tip="银行退票：收款行拒绝入账，原因：账户已注销" style="color:#d48806;">ⓘ</span></span></td>
+              <td>2026-04-02 16:32:14</td>
+              <td class="text-muted">-</td>
               <td>孟佳</td>
               <td>2026-04-11 17:27:05</td>
-              <td>孟佳</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
               <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
-            <tr data-status="付款中" data-entity="WELOY PTE. LTD." data-amount="2406.54" data-currency="GBP">
+            <tr data-status="付款中" data-entity="WELOY PTE. LTD." data-amount="2406.54" data-currency="GBP" data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000070" data-recv-name="Sana Aqlah" data-recv-no="ACC_0000214" data-swift="MIDLGB22" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200046</a></td>
-              <td>费用报账</td>
-              <td><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">付款中</span></td>
-              <td>PaperMax</td>
-              <td>2026-04-02 16:33:22</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-04-02</td>
-              <td>ACC_0000070</td>
               <td>Pilnao</td>
-              <td>ACC_0000214</td>
+              <td class="text-right">2,406.54</td>
+              <td>GBP</td>
               <td>Sana Aqlah</td>
-              <td>32409540</td>
-              <td>-</td>
-              <td>内容制作费</td>
+              <td>ACC_0000214</td>
+              <td>MIDLGB22</td>
+              <td class="text-muted">-</td>
               <td>FYS20260402_004</td>
-              <td class="text-right">GBP 2,406.54</td>
-              <td class="text-right">GBP 0.00</td>
-              <td class="text-right" style="font-weight:600;">GBP 2,406.54</td>
+              <td>LWF20260402002</td>
+              <td>PayerMax</td>
+              <td>线上</td>
+              <td><span class="status-tag" style="background:#f0f4ff; color:#3370ff;">付款中</span></td>
+              <td>2026-04-02 16:33:22</td>
+              <td class="text-muted">-</td>
               <td>孟佳</td>
               <td>2026-04-11 17:37:05</td>
-              <td>孟佳</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
               <td><button class="btn-text">数据日志</button></td>
             </tr>
-            <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="580.00" data-currency="EUR">
+            <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="580.00" data-currency="EUR" data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000070" data-recv-name="Emanuele Busciolini" data-recv-no="ACC_0000288" data-swift="BNLIITRR" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200003</a></td>
-              <td>费用报账</td>
-              <td><span class="status-tag" style="background:#f0fff4; color:#34c759;">付款成功</span></td>
-              <td>PaperMax</td>
-              <td>2026-04-02 16:33:22</td>
               <td>WELOY PTE. LTD.</td>
-              <td>2026-04-02</td>
-              <td>ACC_0000070</td>
               <td>Pilnao</td>
-              <td>ACC_0000288</td>
+              <td class="text-right">580.00</td>
+              <td>EUR</td>
               <td>Emanuele Busciolini</td>
-              <td>17698537380300000102</td>
-              <td>-</td>
-              <td>广告费用</td>
+              <td>ACC_0000288</td>
+              <td>BNLIITRR</td>
+              <td class="text-muted">-</td>
               <td>FYS20260402_005</td>
-              <td class="text-right">EUR 580.00</td>
-              <td class="text-right">EUR 0.00</td>
-              <td class="text-right" style="font-weight:600;">EUR 580.00</td>
-              <td>孟佳</td>
+              <td>LWF20260413003</td>
+              <td>PayerMax</td>
+              <td>线上</td>
+              <td><span class="status-tag" style="background:#f0fff4; color:#34c759;">付款成功</span></td>
+              <td>2026-04-02 16:33:22</td>
               <td>2026-04-13 14:19:46</td>
               <td>孟佳</td>
-              <td class="text-muted">-</td>
-              <td class="text-muted">-</td>
+              <td>2026-04-13 14:19:46</td>
               <td><button class="btn-text">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
           </tbody>
