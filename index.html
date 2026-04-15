@@ -1430,7 +1430,10 @@
               <td>1</td>
               <td><button class="btn-text">退票</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr data-status="付款失败" data-entity="WELOY PTE. LTD." data-amount="700000" data-currency="VND">
+            <tr data-status="付款失败" data-entity="WELOY PTE. LTD." data-amount="700000" data-currency="VND"
+                data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000070"
+                data-recv-name="NGUYEN THI NGOC THU" data-recv-no="ACC_0000913"
+                data-swift="BKIDVNVX" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200037</a></td>
               <td>费用报账</td>
@@ -1455,9 +1458,12 @@
               <td>孟佳</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
             </tr>
-            <tr data-status="付款退票" data-entity="WELOY PTE. LTD." data-amount="4000000" data-currency="VND">
+            <tr data-status="付款退票" data-entity="WELOY PTE. LTD." data-amount="4000000" data-currency="VND"
+                data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000070"
+                data-recv-name="Think Velo HEU" data-recv-no="ACC_0000821"
+                data-swift="VIETINBK" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
               <td><a href="#" class="rules-link">FYS2026040200038</a></td>
               <td>费用报账</td>
@@ -1482,7 +1488,7 @@
               <td>孟佳</td>
               <td class="text-muted">-</td>
               <td class="text-muted">-</td>
-              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
+              <td><button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">驳回</button><button class="btn-text">终止</button><button class="btn-text">详情</button></td>
             </tr>
             <tr data-status="付款中" data-entity="WELOY PTE. LTD." data-amount="2406.54" data-currency="GBP">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1802,6 +1808,64 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-default" onclick="closeDetailModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Re-Pay -->
+<div class="modal-overlay" id="rePayModal" style="z-index:500;">
+  <div class="modal" style="width:560px; max-height:82vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <h2>重新付款</h2>
+      <div class="modal-close" onclick="closeRePayModal()">&times;</div>
+    </div>
+    <div class="modal-body" style="overflow-y:auto; flex:1;">
+      <!-- 原付款信息 -->
+      <div style="font-size:13px; font-weight:600; color:#1f2329; margin-bottom:12px;">原付款信息</div>
+      <div id="rePayOrigInfo" style="display:grid; grid-template-columns:1fr 1fr; gap:10px 24px; background:#f7f8fa; border-radius:6px; padding:14px 16px; font-size:13px;">
+        <!-- filled by JS -->
+      </div>
+      <div style="border-top:1px solid #e5e6eb; margin:20px 0;"></div>
+      <!-- 允许修改信息 -->
+      <div style="font-size:13px; font-weight:600; color:#1f2329; margin-bottom:14px;">修改付款信息</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px 20px;">
+        <div style="grid-column:1/-1;">
+          <div class="form-label" style="font-size:12px; color:#646a73; margin-bottom:6px;">支付场景</div>
+          <div style="display:flex; gap:20px;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+              <input type="radio" name="rePayScene" value="online" checked onchange="handleRePayScene()"> 线上
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+              <input type="radio" name="rePayScene" value="offline" onchange="handleRePayScene()"> 线下
+            </label>
+          </div>
+        </div>
+        <div style="grid-column:1/-1;">
+          <div class="form-label" style="font-size:12px; color:#646a73; margin-bottom:6px;">支付渠道</div>
+          <select class="filter-select" id="rePayChannel" style="width:240px;"></select>
+          <div id="rePayOfflineHint" style="display:none; font-size:12px; color:#ff9500; margin-top:6px;">选择线下，提交付款即单据付款成功</div>
+        </div>
+        <div>
+          <div class="form-label" style="font-size:12px; color:#646a73; margin-bottom:6px;">收款账户名称</div>
+          <input type="text" class="filter-input" id="rePayRecvName" style="width:100%;">
+        </div>
+        <div>
+          <div class="form-label" style="font-size:12px; color:#646a73; margin-bottom:6px;">收款账号</div>
+          <input type="text" class="filter-input" id="rePayRecvNo" style="width:100%;">
+        </div>
+        <div>
+          <div class="form-label" style="font-size:12px; color:#646a73; margin-bottom:6px;">swiftcode</div>
+          <input type="text" class="filter-input" id="rePaySwift" style="width:100%;">
+        </div>
+        <div>
+          <div class="form-label" style="font-size:12px; color:#646a73; margin-bottom:6px;">备注</div>
+          <input type="text" class="filter-input" id="rePayNote" style="width:100%;">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeRePayModal()">取消</button>
+      <button class="btn btn-primary" onclick="closeRePayModal()">确认付款</button>
     </div>
   </div>
 </div>
@@ -2203,12 +2267,60 @@ function closePaymentConfirm() {
   document.getElementById('paymentConfirmModal').classList.remove('visible');
 }
 
+function openRePayModal(btn) {
+  var tr = btn.closest('tr');
+  var origInfo = document.getElementById('rePayOrigInfo');
+  var fields = [
+    ['付款账户名称', tr.dataset.payAcctName || '-'],
+    ['付款账号', tr.dataset.payAcctNo || '-'],
+    ['付款金额', tr.dataset.amount ? Number(tr.dataset.amount).toLocaleString() : '-'],
+    ['收款币种', tr.dataset.currency || '-'],
+    ['收款账户名称', tr.dataset.recvName || '-'],
+    ['收款账号', tr.dataset.recvNo || '-'],
+    ['Swift Code', tr.dataset.swift || '-'],
+    ['备注', tr.dataset.note || '-']
+  ];
+  origInfo.innerHTML = fields.map(function(f) {
+    return '<div style="color:#86909c;font-size:13px;margin-bottom:2px;">' + f[0] + '</div>' +
+           '<div style="font-size:13px;color:#1d2129;margin-bottom:8px;">' + f[1] + '</div>';
+  }).join('');
+  // Pre-fill editable inputs
+  document.getElementById('rePayRecvName').value = tr.dataset.recvName || '';
+  document.getElementById('rePayRecvNo').value = tr.dataset.recvNo || '';
+  document.getElementById('rePaySwift').value = tr.dataset.swift && tr.dataset.swift !== '-' ? tr.dataset.swift : '';
+  document.getElementById('rePayNote').value = tr.dataset.note && tr.dataset.note !== '-' ? tr.dataset.note : '';
+  // Reset scene to 线上
+  document.querySelector('[name="rePayScene"][value="online"]').checked = true;
+  handleRePayScene();
+  document.getElementById('rePayModal').classList.add('visible');
+}
+
+function closeRePayModal() {
+  document.getElementById('rePayModal').classList.remove('visible');
+}
+
+function handleRePayScene() {
+  var scene = document.querySelector('[name="rePayScene"]:checked').value;
+  var sel = document.getElementById('rePayChannel');
+  sel.innerHTML = '';
+  if (scene === 'online') {
+    ['PayerMax', '银行转账'].forEach(function(o) { sel.add(new Option(o, o)); });
+    document.getElementById('rePayOfflineHint').style.display = 'none';
+  } else {
+    ['PayerMax', 'PayPal', '银行转账'].forEach(function(o) { sel.add(new Option(o, o)); });
+    document.getElementById('rePayOfflineHint').style.display = 'block';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('paymentTable').addEventListener('change', function(e) {
     if (e.target.classList.contains('pay-row-check')) updateBatchBar();
   });
   document.getElementById('paymentConfirmModal').addEventListener('click', function(e) {
     if (e.target === this) closePaymentConfirm();
+  });
+  document.getElementById('rePayModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRePayModal();
   });
 });
 </script>
