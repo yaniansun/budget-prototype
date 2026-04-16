@@ -1446,7 +1446,7 @@
               <td>2026-04-12 08:58</td>
               <td>张三</td>
               <td>2026-04-11 17:51:31</td>
-              <td><button class="btn-text">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
+              <td><button class="btn-text" onclick="openReturnTicketConfirm(this)">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
             <tr data-status="付款失败" data-entity="WELOY PTE. LTD." data-amount="700000" data-currency="VND"
                 data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="601307333201"
@@ -1540,7 +1540,7 @@
               <td>2026-04-13 14:19:46</td>
               <td>孟佳</td>
               <td>2026-04-13 14:19:46</td>
-              <td><button class="btn-text">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
+              <td><button class="btn-text" onclick="openReturnTicketConfirm(this)">退票</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button></td>
             </tr>
           </tbody>
         </table>
@@ -1860,6 +1860,23 @@
     <div class="modal-footer">
       <button class="btn btn-default" onclick="closeRePayModal()">取消</button>
       <button class="btn btn-primary" onclick="closeRePayModal()">确认付款</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Return Ticket Confirm -->
+<div class="modal-overlay" id="returnTicketModal" style="z-index:500;">
+  <div class="modal" style="width:400px;">
+    <div class="modal-header">
+      <h2>退票确认</h2>
+      <div class="modal-close" onclick="closeReturnTicketConfirm()">&times;</div>
+    </div>
+    <div class="modal-body" style="padding:20px 24px;">
+      <p id="returnTicketDesc" style="font-size:14px; color:#1f2329; line-height:1.6;"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="closeReturnTicketConfirm()">取消</button>
+      <button class="btn btn-primary" onclick="confirmReturnTicket()">确认</button>
     </div>
   </div>
 </div>
@@ -2290,6 +2307,35 @@ function closePaymentConfirm() {
   document.getElementById('paymentConfirmModal').classList.remove('visible');
 }
 
+var _returnTicketRow = null;
+function openReturnTicketConfirm(btn) {
+  _returnTicketRow = btn.closest('tr');
+  var recvName = _returnTicketRow.dataset.recvName || '该收款方';
+  document.getElementById('returnTicketDesc').innerHTML =
+    '确认<span style="color:#f53f3f;">' + recvName + '</span>的付款已在支付渠道侧发生退票？';
+  document.getElementById('returnTicketModal').classList.add('visible');
+}
+function closeReturnTicketConfirm() {
+  document.getElementById('returnTicketModal').classList.remove('visible');
+  _returnTicketRow = null;
+}
+function confirmReturnTicket() {
+  if (_returnTicketRow) {
+    _returnTicketRow.dataset.status = '付款退票';
+    var statusCell = _returnTicketRow.querySelector('.status-tag');
+    if (statusCell) {
+      statusCell.style.background = '#fff8e6';
+      statusCell.style.color = '#d48806';
+      statusCell.textContent = '付款退票';
+    }
+    var opCell = _returnTicketRow.querySelector('td:last-child');
+    if (opCell) {
+      opCell.innerHTML = '<button class="btn-text" style="color:#3370ff;" onclick="openRePayModal(this)">重新付款</button><button class="btn-text">数据日志</button><button class="btn-text">付款记录</button>';
+    }
+  }
+  closeReturnTicketConfirm();
+}
+
 function openImportModal() {
   document.getElementById('importModal').classList.add('visible');
 }
@@ -2388,6 +2434,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.getElementById('importModal').addEventListener('click', function(e) {
     if (e.target === this) closeImportModal();
+  });
+  document.getElementById('returnTicketModal').addEventListener('click', function(e) {
+    if (e.target === this) closeReturnTicketConfirm();
   });
 });
 </script>
