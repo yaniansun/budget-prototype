@@ -2366,7 +2366,7 @@ function handleRePayScene() {
   var sel = document.getElementById('rePayChannel');
   sel.innerHTML = '';
   if (scene === 'online') {
-    ['PayerMax', '银行转账'].forEach(function(o) { sel.add(new Option(o, o)); });
+    ['银行转账'].forEach(function(o) { sel.add(new Option(o, o)); });
     document.getElementById('rePayOfflineHint').style.display = 'none';
   } else {
     ['PayerMax', 'PayPal', '银行转账'].forEach(function(o) { sel.add(new Option(o, o)); });
