@@ -1380,7 +1380,7 @@
               <td class="text-muted">-</td>
               <td>加速</td>
               <td>2026-04-10 17:10:01</td>
-              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">数据日志</button></td>
+              <td><button class="btn-text" style="color:#3370ff;" onclick="openPaymentConfirm([this.closest('tr')])">付款</button><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款中" data-entity="Oaxis Tech T-2 LLC." data-amount="100.00" data-currency="USD" data-pay-acct-name="Oaxis Tech T-2 LLC." data-pay-acct-no="ACC_0000070" data-recv-name="Evangelina Baht Luvco" data-recv-no="ACC_0000076" data-swift="BKCIVNVX" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -1424,7 +1424,7 @@
               <td class="text-muted">-</td>
               <td>王五</td>
               <td>2026-04-15 08:46:58</td>
-              <td><button class="btn-text" style="color:#3370ff;">付款</button><button class="btn-text">数据日志</button></td>
+              <td><button class="btn-text" style="color:#3370ff;" onclick="openPaymentConfirm([this.closest('tr')])">付款</button><button class="btn-text">数据日志</button></td>
             </tr>
             <tr data-status="付款成功" data-entity="WELOY PTE. LTD." data-amount="4577.38" data-currency="USD" data-pay-acct-name="WELOY PTE. LTD." data-pay-acct-no="ACC_0000008" data-recv-name="Qui Beijing Music Co Ltd" data-recv-no="ACC_0000759" data-swift="ICBKCNBJ" data-note="-">
               <td><input type="checkbox" class="pay-row-check"></td>
@@ -2235,17 +2235,20 @@ function clearPaymentSelection() {
   updateBatchBar();
 }
 
-function openPaymentConfirm() {
-  var rows = document.querySelectorAll('#paymentTable tbody tr');
-  // only 待付款 rows that are checked
+function openPaymentConfirm(preselected) {
   var selected = [];
-  rows.forEach(function(tr) {
-    var cb = tr.querySelector('.pay-row-check');
-    if (cb && cb.checked && tr.dataset.status === '待付款') selected.push(tr);
-  });
-  if (selected.length === 0) {
-    alert('请选择状态为「待付款」的记录');
-    return;
+  if (preselected) {
+    selected = preselected;
+  } else {
+    var rows = document.querySelectorAll('#paymentTable tbody tr');
+    rows.forEach(function(tr) {
+      var cb = tr.querySelector('.pay-row-check');
+      if (cb && cb.checked && tr.dataset.status === '待付款') selected.push(tr);
+    });
+    if (selected.length === 0) {
+      alert('请选择状态为「待付款」的记录');
+      return;
+    }
   }
   // group by entity + currency
   var groups = {};
