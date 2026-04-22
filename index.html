@@ -31,10 +31,17 @@
   .pc-input:focus { border-color:#3370ff; }
   .pc-select { width:100%; padding:6px 10px; border:1px solid #e5e6eb; border-radius:4px; font-size:13px; color:#1d2129; outline:none; background:#fff; box-sizing:border-box; appearance:none; background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238f959e' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; }
   .pc-select:focus { border-color:#3370ff; }
-  .pc-channel-tabs { display:flex; gap:0; border:1px solid #e5e6eb; border-radius:4px; overflow:hidden; width:fit-content; }
-  .pc-channel-tab { padding:6px 16px; font-size:13px; color:#646a73; cursor:pointer; background:#fff; border-right:1px solid #e5e6eb; white-space:nowrap; }
-  .pc-channel-tab:last-child { border-right:none; }
-  .pc-channel-tab.active { background:#3370ff; color:#fff; }
+  .pc-ch-dropdown { position:relative; width:100%; }
+  .pc-ch-trigger { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; border:1px solid #e5e6eb; border-radius:4px; font-size:13px; color:#1d2129; background:#fff; cursor:pointer; user-select:none; }
+  .pc-ch-trigger.placeholder { color:#8f959e; }
+  .pc-ch-trigger.open { border-color:#3370ff; }
+  .pc-ch-panel { display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #3370ff; border-radius:4px; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:100; }
+  .pc-ch-panel.open { display:block; }
+  .pc-ch-search { display:flex; align-items:center; padding:6px 10px; border-bottom:1px solid #f0f1f2; gap:6px; }
+  .pc-ch-search input { flex:1; border:none; outline:none; font-size:13px; color:#1d2129; }
+  .pc-ch-search svg { flex-shrink:0; color:#8f959e; }
+  .pc-ch-opt { padding:10px 14px; font-size:13px; color:#1d2129; cursor:pointer; }
+  .pc-ch-opt:hover { background:#f5f6f7; }
   .pc-readonly { padding:6px 10px; font-size:13px; color:#1d2129; background:#f7f8fa; border-radius:4px; border:1px solid #f0f1f2; }
   .pc-hint { font-size:12px; color:#8f959e; margin-top:4px; }
   .pc-err { font-size:12px; color:#f53f3f; margin-top:3px; display:none; }
@@ -1905,14 +1912,19 @@
   </div>
 </div>
 
-<!-- Modal: 我的工资卡 -->
-<div class="modal-overlay" id="payrollCardModal" style="z-index:600;">
-  <div class="modal" style="width:580px; max-height:88vh; display:flex; flex-direction:column;">
-    <div class="modal-header">
-      <h2>我的工资卡</h2>
-      <div class="modal-close" onclick="closePayrollCardModal()">&times;</div>
+<!-- Page: 我的工资卡 -->
+<div class="page-section" id="page-payroll-card" style="margin-left:180px; margin-top:48px;">
+  <div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+    <h1>我的工资卡</h1>
+    <button id="pcEditBtn" class="btn btn-default" onclick="enterPcEditMode()" style="display:none;">编辑</button>
+  </div>
+  <div class="main">
+    <!-- 查看模式 -->
+    <div id="pcViewMode" style="display:none; max-width:640px; background:#fff; border-radius:8px; padding:28px 32px; border:1px solid #e5e6eb;">
+      <div id="pcViewContent"></div>
     </div>
-    <div class="modal-body" style="overflow-y:auto; flex:1; padding:20px 24px;">
+    <!-- 编辑模式 -->
+    <div id="pcEditMode" style="max-width:640px; background:#fff; border-radius:8px; padding:28px 32px; border:1px solid #e5e6eb;">
       <!-- 员工信息 -->
       <div class="pc-section-title">员工信息</div>
       <div class="pc-row">
@@ -1954,16 +1966,24 @@
       <div class="pc-row">
         <div class="pc-label required">支付渠道</div>
         <div class="pc-ctrl">
-          <div class="pc-channel-tabs" id="pcChannelTabs">
-            <div class="pc-channel-tab active" data-ch="payermax" onclick="selectPcChannel(this)">PayerMax</div>
-            <div class="pc-channel-tab" data-ch="paypal" onclick="selectPcChannel(this)">PayPal</div>
-            <div class="pc-channel-tab" data-ch="bank" onclick="selectPcChannel(this)">银行转账</div>
+          <div class="pc-ch-dropdown" id="pcChDropdown">
+            <div class="pc-ch-trigger placeholder" id="pcChTrigger" onclick="togglePcChDropdown(event)">
+              <span id="pcChTriggerText">请选择支付渠道</span>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="#8f959e" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="pc-ch-panel" id="pcChPanel">
+              <div id="pcChOpts">
+                <div class="pc-ch-opt" data-ch="payermax" onclick="selectPcChannel(this)">PayerMax</div>
+                <div class="pc-ch-opt" data-ch="paypal" onclick="selectPcChannel(this)">PayPal</div>
+                <div class="pc-ch-opt" data-ch="bank" onclick="selectPcChannel(this)">银行转账</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- PayerMax 字段 -->
-      <div id="pcPayerMaxSection">
+      <div id="pcPayerMaxSection" style="display:none;">
         <div class="pc-row">
           <div class="pc-label required">支付方式</div>
           <div class="pc-ctrl">
@@ -1992,7 +2012,6 @@
 
       <!-- 银行转账 字段 -->
       <div id="pcBankSection" style="display:none;">
-        <div class="pc-section-title" style="margin-top:4px; font-size:12px; font-weight:500; color:#8f959e; border:none; padding-bottom:4px;">账户信息 — 银行转账</div>
         <div class="pc-row">
           <div class="pc-label required">收款姓名</div>
           <div class="pc-ctrl"><input class="pc-input" type="text" id="pcBkRecvName" placeholder="请输入"></div>
@@ -2043,10 +2062,10 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="closePayrollCardModal()">取消</button>
-      <button class="btn btn-primary" onclick="savePayrollCard()">保存</button>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px; padding-top:16px; border-top:1px solid #e5e6eb;">
+        <button class="btn btn-default" onclick="goBackFromPayrollCard()">取消</button>
+        <button class="btn btn-primary" onclick="savePayrollCard()">保存</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2207,7 +2226,8 @@ function switchPage(page, el) {
   var pageMap = {
     'report':   '[onclick="switchPage(\'report\', this)"]',
     'planning': '[onclick="switchPage(\'planning\', this)"]',
-    'payment':  '[onclick="switchPage(\'payment\', this)"]'
+    'payment':       '[onclick="switchPage(\'payment\', this)"]',
+    'payroll-card':  null
   };
   function activateByHash() {
     var hash = window.location.hash.replace('#', '') || 'report';
@@ -2215,8 +2235,11 @@ function switchPage(page, el) {
     document.querySelectorAll('.page-section').forEach(function(s) { s.classList.remove('active'); });
     document.getElementById('page-' + hash).classList.add('active');
     document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
-    var sel = document.querySelector('.sidebar-item' + (pageMap[hash] || ''));
-    if (sel) sel.classList.add('active');
+    var selectorSuffix = pageMap[hash];
+    if (selectorSuffix) {
+      var sel = document.querySelector('.sidebar-item' + selectorSuffix);
+      if (sel) sel.classList.add('active');
+    }
   }
   window.addEventListener('hashchange', activateByHash);
   document.addEventListener('DOMContentLoaded', activateByHash);
@@ -2527,12 +2550,23 @@ var _pcPayerMaxMethodMap = {
 };
 var _pcCurrentChannel = 'payermax';
 
+var _pcPrevHash = 'report';
 function openPayrollCardModal() {
   document.getElementById('avatarMenu').style.display = 'none';
-  document.getElementById('payrollCardModal').classList.add('visible');
+  _pcPrevHash = window.location.hash.replace('#', '') || 'report';
+  if (_pcSavedData) {
+    showPcViewMode();
+  } else {
+    document.getElementById('pcViewMode').style.display = 'none';
+    document.getElementById('pcEditMode').style.display = 'block';
+    document.getElementById('pcEditBtn').style.display = 'none';
+  }
+  switchPage('payroll-card', null);
 }
-function closePayrollCardModal() {
-  document.getElementById('payrollCardModal').classList.remove('visible');
+function goBackFromPayrollCard() {
+  var prev = _pcPrevHash || 'report';
+  var sidebarEl = document.querySelector('.sidebar-item[onclick*="' + prev + '"]');
+  switchPage(prev, sidebarEl);
 }
 
 function onPcCountryChange() {
@@ -2563,14 +2597,32 @@ function onPcCurrencyChange() {
   if (addrRow) addrRow.style.display = (currency === 'CNY') ? 'flex' : 'none';
 }
 
+function togglePcChDropdown(e) {
+  e.stopPropagation();
+  var panel = document.getElementById('pcChPanel');
+  var trigger = document.getElementById('pcChTrigger');
+  var isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open');
+  trigger.classList.toggle('open', !isOpen);
+}
 function selectPcChannel(el) {
-  document.querySelectorAll('#pcChannelTabs .pc-channel-tab').forEach(function(t) { t.classList.remove('active'); });
-  el.classList.add('active');
   _pcCurrentChannel = el.dataset.ch;
+  var label = el.textContent.trim();
+  var trigger = document.getElementById('pcChTrigger');
+  document.getElementById('pcChTriggerText').textContent = label;
+  trigger.classList.remove('placeholder', 'open');
+  document.getElementById('pcChPanel').classList.remove('open');
   document.getElementById('pcPayerMaxSection').style.display = _pcCurrentChannel === 'payermax' ? 'block' : 'none';
   document.getElementById('pcPayPalSection').style.display = _pcCurrentChannel === 'paypal' ? 'block' : 'none';
   document.getElementById('pcBankSection').style.display = _pcCurrentChannel === 'bank' ? 'block' : 'none';
 }
+document.addEventListener('click', function(e) {
+  var dropdown = document.getElementById('pcChDropdown');
+  if (dropdown && !dropdown.contains(e.target)) {
+    document.getElementById('pcChPanel').classList.remove('open');
+    document.getElementById('pcChTrigger').classList.remove('open');
+  }
+});
 
 function onPcSwiftChange() {
   var swift = document.getElementById('pcBkSwift').value;
@@ -2586,9 +2638,93 @@ function onPcBillUpload(input) {
   }
 }
 
+var _pcSavedData = null;
+var _pcChannelLabels = { payermax: 'PayerMax', paypal: 'PayPal', bank: '银行转账' };
+
 function savePayrollCard() {
-  alert('保存成功');
-  closePayrollCardModal();
+  var ch = _pcCurrentChannel;
+  var countryEl = document.getElementById('pcCountry');
+  var countryText = countryEl.options[countryEl.selectedIndex] ? countryEl.options[countryEl.selectedIndex].text : '';
+  var currencyEl = document.getElementById('pcCurrency');
+  var currencyText = currencyEl.options[currencyEl.selectedIndex] ? currencyEl.options[currencyEl.selectedIndex].text : '';
+
+  _pcSavedData = {
+    country: countryText,
+    currency: currencyText,
+    channel: ch,
+    channelLabel: _pcChannelLabels[ch] || ch
+  };
+  if (ch === 'payermax') {
+    var pmMethod = document.getElementById('pcPayerMaxMethod');
+    _pcSavedData.method = pmMethod.value;
+    _pcSavedData.recvName = document.getElementById('pcPmRecvName').value;
+  } else if (ch === 'paypal') {
+    _pcSavedData.recvName = document.getElementById('pcPpRecvName').value;
+    _pcSavedData.ppAccount = document.getElementById('pcPpAccount').value;
+  } else if (ch === 'bank') {
+    _pcSavedData.recvName = document.getElementById('pcBkRecvName').value;
+    _pcSavedData.acctNo = document.getElementById('pcBkAcctNo').value;
+    _pcSavedData.swift = document.getElementById('pcBkSwift').value;
+    _pcSavedData.bankName = document.getElementById('pcBkBankName').value;
+    _pcSavedData.phone = document.getElementById('pcBkPhone').value;
+    _pcSavedData.addr = document.getElementById('pcBkAddr').value;
+    var billPreview = document.getElementById('pcBkBillPreview');
+    _pcSavedData.bill = billPreview.style.display !== 'none' ? billPreview.textContent : '';
+  }
+  showPcViewMode();
+}
+
+function showPcViewMode() {
+  var d = _pcSavedData;
+  if (!d) return;
+  var rows = [
+    ['国家/地区', d.country],
+    ['收款币种', d.currency],
+    ['支付渠道', d.channelLabel]
+  ];
+  if (d.channel === 'payermax') {
+    if (d.method) rows.push(['支付方式', d.method]);
+    if (d.recvName) rows.push(['收款姓名', d.recvName]);
+  } else if (d.channel === 'paypal') {
+    if (d.recvName) rows.push(['收款姓名', d.recvName]);
+    if (d.ppAccount) rows.push(['PayPal账号', d.ppAccount]);
+  } else if (d.channel === 'bank') {
+    if (d.recvName) rows.push(['收款姓名', d.recvName]);
+    if (d.acctNo) rows.push(['收款账号', d.acctNo]);
+    if (d.swift) rows.push(['Swiftcode代码', d.swift]);
+    if (d.bankName) rows.push(['收款银行名称', d.bankName]);
+    if (d.phone) rows.push(['手机号', d.phone]);
+    if (d.addr) rows.push(['收款银行地址', d.addr]);
+    if (d.bill) rows.push(['银行账单', d.bill]);
+  }
+  var html = '<div class="pc-section-title">员工信息</div>' +
+    '<div class="pc-row"><div class="pc-label">员工姓名</div><div class="pc-ctrl"><div class="pc-readonly">孙燕安</div></div></div>' +
+    '<div class="pc-row"><div class="pc-label">合同账户类型</div><div class="pc-ctrl"><div class="pc-readonly">境外账户</div></div></div>' +
+    '<div class="pc-section-title" style="margin-top:20px;">收款信息</div>' +
+    rows.map(function(r) {
+      return '<div class="pc-row"><div class="pc-label">' + r[0] + '</div><div class="pc-ctrl"><div class="pc-readonly">' + (r[1] || '-') + '</div></div></div>';
+    }).join('');
+  document.getElementById('pcViewContent').innerHTML = html;
+  document.getElementById('pcViewMode').style.display = 'block';
+  document.getElementById('pcEditMode').style.display = 'none';
+  document.getElementById('pcEditBtn').style.display = 'block';
+}
+
+function enterPcEditMode() {
+  document.getElementById('pcViewMode').style.display = 'none';
+  document.getElementById('pcEditMode').style.display = 'block';
+  document.getElementById('pcEditBtn').style.display = 'none';
+  // Re-populate channel selection if saved
+  if (_pcSavedData) {
+    var ch = _pcSavedData.channel;
+    _pcCurrentChannel = ch;
+    var triggerText = _pcChannelLabels[ch] || ch;
+    document.getElementById('pcChTriggerText').textContent = triggerText;
+    document.getElementById('pcChTrigger').classList.remove('placeholder');
+    document.getElementById('pcPayerMaxSection').style.display = ch === 'payermax' ? 'block' : 'none';
+    document.getElementById('pcPayPalSection').style.display = ch === 'paypal' ? 'block' : 'none';
+    document.getElementById('pcBankSection').style.display = ch === 'bank' ? 'block' : 'none';
+  }
 }
 
 function openImportModal() {
