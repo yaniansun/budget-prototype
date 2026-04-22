@@ -35,6 +35,7 @@
   .pc-ch-trigger { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; border:1px solid #e5e6eb; border-radius:4px; font-size:13px; color:#1d2129; background:#fff; cursor:pointer; user-select:none; }
   .pc-ch-trigger.placeholder { color:#8f959e; }
   .pc-ch-trigger.open { border-color:#3370ff; }
+  .pc-ch-trigger.disabled { background:#f7f8fa; cursor:not-allowed; opacity:0.7; }
   .pc-ch-panel { display:none; position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #3370ff; border-radius:4px; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:100; }
   .pc-ch-panel.open { display:block; }
   .pc-ch-search { display:flex; align-items:center; padding:6px 10px; border-bottom:1px solid #f0f1f2; gap:6px; }
@@ -1914,13 +1915,16 @@
 
 <!-- Page: 我的工资卡 -->
 <div class="page-section" id="page-payroll-card" style="margin-left:180px; margin-top:48px;">
-  <div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+  <div class="page-header">
     <h1>我的工资卡</h1>
-    <button id="pcEditBtn" class="btn btn-default" onclick="enterPcEditMode()" style="display:none;">编辑</button>
   </div>
   <div class="main">
     <!-- 查看模式 -->
     <div id="pcViewMode" style="display:none; max-width:640px; background:#fff; border-radius:8px; padding:28px 32px; border:1px solid #e5e6eb;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+        <div style="font-size:13px; font-weight:600; color:#1f2329;">员工信息</div>
+        <button id="pcEditBtn" class="btn btn-default" onclick="enterPcEditMode()" style="font-size:12px; padding:4px 12px;">编辑</button>
+      </div>
       <div id="pcViewContent"></div>
     </div>
     <!-- 编辑模式 -->
@@ -1967,8 +1971,8 @@
         <div class="pc-label required">支付渠道</div>
         <div class="pc-ctrl">
           <div class="pc-ch-dropdown" id="pcChDropdown">
-            <div class="pc-ch-trigger placeholder" id="pcChTrigger" onclick="togglePcChDropdown(event)">
-              <span id="pcChTriggerText">请选择支付渠道</span>
+            <div class="pc-ch-trigger placeholder disabled" id="pcChTrigger" onclick="togglePcChDropdown(event)">
+              <span id="pcChTriggerText">请先选择国家/地区</span>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="#8f959e" stroke-width="1.2" stroke-linecap="round"/></svg>
             </div>
             <div class="pc-ch-panel" id="pcChPanel">
@@ -2559,7 +2563,6 @@ function openPayrollCardModal() {
   } else {
     document.getElementById('pcViewMode').style.display = 'none';
     document.getElementById('pcEditMode').style.display = 'block';
-    document.getElementById('pcEditBtn').style.display = 'none';
   }
   switchPage('payroll-card', null);
 }
@@ -2582,6 +2585,20 @@ function onPcCountryChange() {
     currSel.disabled = false;
   }
   onPcCurrencyChange();
+  // Enable/disable channel dropdown based on country selection
+  var chTrigger = document.getElementById('pcChTrigger');
+  if (!country) {
+    chTrigger.classList.add('disabled');
+    // Reset channel selection
+    _pcCurrentChannel = null;
+    document.getElementById('pcChTriggerText').textContent = '请先选择国家/地区';
+    chTrigger.classList.add('placeholder');
+    document.getElementById('pcPayerMaxSection').style.display = 'none';
+    document.getElementById('pcPayPalSection').style.display = 'none';
+    document.getElementById('pcBankSection').style.display = 'none';
+  } else {
+    chTrigger.classList.remove('disabled');
+  }
   // Update PayerMax method based on country
   var methodSel = document.getElementById('pcPayerMaxMethod');
   var defaultMethod = _pcPayerMaxMethodMap[country] || 'Banktransfer';
@@ -2599,8 +2616,9 @@ function onPcCurrencyChange() {
 
 function togglePcChDropdown(e) {
   e.stopPropagation();
-  var panel = document.getElementById('pcChPanel');
   var trigger = document.getElementById('pcChTrigger');
+  if (trigger.classList.contains('disabled')) return;
+  var panel = document.getElementById('pcChPanel');
   var isOpen = panel.classList.contains('open');
   panel.classList.toggle('open');
   trigger.classList.toggle('open', !isOpen);
@@ -2697,8 +2715,7 @@ function showPcViewMode() {
     if (d.addr) rows.push(['收款银行地址', d.addr]);
     if (d.bill) rows.push(['银行账单', d.bill]);
   }
-  var html = '<div class="pc-section-title">员工信息</div>' +
-    '<div class="pc-row"><div class="pc-label">员工姓名</div><div class="pc-ctrl"><div class="pc-readonly">孙燕安</div></div></div>' +
+  var html = '<div class="pc-row"><div class="pc-label">员工姓名</div><div class="pc-ctrl"><div class="pc-readonly">孙燕安</div></div></div>' +
     '<div class="pc-row"><div class="pc-label">合同账户类型</div><div class="pc-ctrl"><div class="pc-readonly">境外账户</div></div></div>' +
     '<div class="pc-section-title" style="margin-top:20px;">收款信息</div>' +
     rows.map(function(r) {
@@ -2707,13 +2724,11 @@ function showPcViewMode() {
   document.getElementById('pcViewContent').innerHTML = html;
   document.getElementById('pcViewMode').style.display = 'block';
   document.getElementById('pcEditMode').style.display = 'none';
-  document.getElementById('pcEditBtn').style.display = 'block';
 }
 
 function enterPcEditMode() {
   document.getElementById('pcViewMode').style.display = 'none';
   document.getElementById('pcEditMode').style.display = 'block';
-  document.getElementById('pcEditBtn').style.display = 'none';
   // Re-populate channel selection if saved
   if (_pcSavedData) {
     var ch = _pcSavedData.channel;
