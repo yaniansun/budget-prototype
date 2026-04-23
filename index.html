@@ -1963,7 +1963,7 @@
         <div class="pc-label required">收款币种</div>
         <div class="pc-ctrl">
           <select class="pc-select" id="pcCurrency" onchange="onPcCurrencyChange()" disabled>
-            <option value="">请先选择国家/地区</option>
+            <option value="">请先选择收款国家/地区</option>
           </select>
         </div>
       </div>
@@ -1972,7 +1972,7 @@
         <div class="pc-ctrl">
           <div class="pc-ch-dropdown" id="pcChDropdown">
             <div class="pc-ch-trigger placeholder disabled" id="pcChTrigger" onclick="togglePcChDropdown(event)">
-              <span id="pcChTriggerText">请先选择国家/地区</span>
+              <span id="pcChTriggerText">请先选择收款国家/地区</span>
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="#8f959e" stroke-width="1.2" stroke-linecap="round"/></svg>
             </div>
             <div class="pc-ch-panel" id="pcChPanel">
@@ -2577,7 +2577,7 @@ function onPcCountryChange() {
   var currSel = document.getElementById('pcCurrency');
   currSel.innerHTML = '';
   if (!country) {
-    currSel.innerHTML = '<option value="">请先选择国家/地区</option>';
+    currSel.innerHTML = '<option value="">请先选择收款国家/地区</option>';
     currSel.disabled = true;
   } else {
     var currencies = _pcCountryCurrencyMap[country] || ['USD'];
@@ -2591,7 +2591,7 @@ function onPcCountryChange() {
     chTrigger.classList.add('disabled');
     // Reset channel selection
     _pcCurrentChannel = null;
-    document.getElementById('pcChTriggerText').textContent = '请先选择国家/地区';
+    document.getElementById('pcChTriggerText').textContent = '请先选择收款国家/地区';
     chTrigger.classList.add('placeholder');
     document.getElementById('pcPayerMaxSection').style.display = 'none';
     document.getElementById('pcPayPalSection').style.display = 'none';
