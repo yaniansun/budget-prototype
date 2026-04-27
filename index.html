@@ -1928,6 +1928,10 @@
       <span>EN</span>
     </div>
   </div>
+  <div id="pcNotice" style="display:flex; align-items:flex-start; gap:8px; background:#fffbe6; border:1px solid #ffe58f; border-radius:6px; padding:10px 16px; margin:0 24px; font-size:13px; color:#876800; max-width:640px;">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:1px;"><circle cx="8" cy="8" r="7" stroke="#faad14" stroke-width="1.4"/><path d="M8 5v4" stroke="#faad14" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11" r="0.7" fill="#faad14"/></svg>
+    <span id="pcNoticeText">为确保工资准时准确到账，请提供正确的银行账户信息。如有疑问请联系 <strong>@杨左美子</strong></span>
+  </div>
   <div class="main">
     <!-- 查看模式 -->
     <div id="pcViewMode" style="display:none; max-width:640px; background:#fff; border-radius:8px; padding:28px 32px; border:1px solid #e5e6eb;">
@@ -2565,7 +2569,8 @@ var _pcI18n = {
     swiftHint:'仅支持大写字母或数字，长度为8位或11位，输入字母自动转大写',
     phoneHint:'当Swiftcode第5-6位为TW时必填',
     uploadHint:'请上传包含收款账号和姓名的银行账单',
-    uploadSub:'支持 JPG、JPEG、PNG、PDF、DOC、DOCX，大小不超过 50MB'
+    uploadSub:'支持 JPG、JPEG、PNG、PDF、DOC、DOCX，大小不超过 50MB',
+    notice:'为确保工资准时准确到账，请提供正确的银行账户信息。如有疑问请联系 <strong>@杨左美子</strong>'
   },
   en: {
     pageTitle:'My Payroll Card', empInfo:'Employee Information', empName:'Employee Name',
@@ -2583,7 +2588,8 @@ var _pcI18n = {
     swiftHint:'Uppercase letters or numbers only, 8 or 11 characters. Auto-capitalizes.',
     phoneHint:'Required when SWIFT Code positions 5–6 are "TW"',
     uploadHint:'Upload bank statement containing account number and name',
-    uploadSub:'Supports JPG, JPEG, PNG, PDF, DOC, DOCX. Max 50MB.'
+    uploadSub:'Supports JPG, JPEG, PNG, PDF, DOC, DOCX. Max 50MB.',
+    notice:'To ensure your salary is paid on time and accurately, please provide correct bank account information. For questions, contact <strong>@杨左美子</strong>'
   }
 };
 function togglePcLang() {
@@ -2610,6 +2616,9 @@ function applyPcLang() {
   if (!_pcCurrentChannel) {
     document.getElementById('pcChTriggerText').textContent = t.selectCountryFirst;
   }
+  // notice
+  var noticeEl = document.getElementById('pcNoticeText');
+  if (noticeEl) noticeEl.innerHTML = t.notice;
   // re-render view mode if active
   if (_pcSavedData && document.getElementById('pcViewMode').style.display !== 'none') {
     showPcViewMode();
