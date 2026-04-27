@@ -46,6 +46,11 @@
   .pc-readonly { padding:6px 10px; font-size:13px; color:#1d2129; background:#f7f8fa; border-radius:4px; border:1px solid #f0f1f2; }
   .pc-hint { font-size:12px; color:#8f959e; margin-top:4px; }
   .pc-err { font-size:12px; color:#f53f3f; margin-top:3px; display:none; }
+  .pc-lang-switch { display:flex; align-items:center; gap:7px; font-size:12px; color:#646a73; }
+  .pc-lang-track { width:36px; height:20px; background:#e5e6eb; border-radius:10px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; }
+  .pc-lang-track.on { background:#3370ff; }
+  .pc-lang-thumb { width:16px; height:16px; background:#fff; border-radius:50%; position:absolute; top:2px; left:2px; transition:left 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.2); }
+  .pc-lang-track.on .pc-lang-thumb { left:18px; }
   .pc-upload-box { display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed #c9cdd4; border-radius:6px; padding:20px; cursor:pointer; background:#fafafa; gap:6px; }
   .pc-upload-box:hover { border-color:#3370ff; background:#f0f4ff; }
   .pc-upload-box svg { color:#8f959e; }
@@ -1915,38 +1920,41 @@
 
 <!-- Page: 我的工资卡 -->
 <div class="page-section" id="page-payroll-card" style="margin-left:180px; margin-top:48px;">
-  <div class="page-header">
-    <h1>我的工资卡</h1>
+  <div class="page-header" style="display:flex; align-items:center; justify-content:space-between;">
+    <h1 id="pcPageTitle">我的工资卡</h1>
+    <div class="pc-lang-switch">
+      <span>中文</span>
+      <div class="pc-lang-track" id="pcLangTrack" onclick="togglePcLang()"><div class="pc-lang-thumb"></div></div>
+      <span>EN</span>
+    </div>
   </div>
   <div class="main">
     <!-- 查看模式 -->
     <div id="pcViewMode" style="display:none; max-width:640px; background:#fff; border-radius:8px; padding:28px 32px; border:1px solid #e5e6eb;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-        <div style="font-size:13px; font-weight:600; color:#1f2329;">员工信息</div>
-        <button id="pcEditBtn" class="btn btn-default" onclick="enterPcEditMode()" style="font-size:12px; padding:4px 12px;">编辑</button>
+        <div id="pcViewEmpInfoTitle" style="font-size:13px; font-weight:600; color:#1f2329;" data-i18n="empInfo">员工信息</div>
+        <button id="pcEditBtn" class="btn btn-default" onclick="enterPcEditMode()" style="font-size:12px; padding:4px 12px;" data-i18n="edit">编辑</button>
       </div>
       <div id="pcViewContent"></div>
     </div>
     <!-- 编辑模式 -->
     <div id="pcEditMode" style="max-width:640px; background:#fff; border-radius:8px; padding:28px 32px; border:1px solid #e5e6eb;">
-      <!-- 员工信息 -->
-      <div class="pc-section-title">员工信息</div>
+      <div class="pc-section-title" data-i18n="empInfo">员工信息</div>
       <div class="pc-row">
-        <div class="pc-label">员工姓名</div>
+        <div class="pc-label" data-i18n="empName">员工姓名</div>
         <div class="pc-ctrl"><div class="pc-readonly">孙燕安</div></div>
       </div>
       <div class="pc-row">
-        <div class="pc-label">合同账户类型</div>
-        <div class="pc-ctrl"><div class="pc-readonly">境外账户</div></div>
+        <div class="pc-label" data-i18n="contractType">合同账户类型</div>
+        <div class="pc-ctrl"><div class="pc-readonly" data-i18n="overseasAcct">境外账户</div></div>
       </div>
 
-      <!-- 收款信息 -->
-      <div class="pc-section-title" style="margin-top:20px;">收款信息</div>
+      <div class="pc-section-title" style="margin-top:20px;" data-i18n="payInfo">收款信息</div>
       <div class="pc-row">
-        <div class="pc-label required">国家/地区</div>
+        <div class="pc-label required" data-i18n="country">国家/地区</div>
         <div class="pc-ctrl">
           <select class="pc-select" id="pcCountry" onchange="onPcCountryChange()">
-            <option value="">请选择</option>
+            <option value="" data-i18n="selectPlz">请选择</option>
             <option value="VN">越南 Vietnam</option>
             <option value="PH">菲律宾 Philippines</option>
             <option value="RU">俄罗斯 Russia</option>
@@ -1960,15 +1968,15 @@
         </div>
       </div>
       <div class="pc-row">
-        <div class="pc-label required">收款币种</div>
+        <div class="pc-label required" data-i18n="currency">收款币种</div>
         <div class="pc-ctrl">
           <select class="pc-select" id="pcCurrency" onchange="onPcCurrencyChange()" disabled>
-            <option value="">请先选择收款国家/地区</option>
+            <option value="" id="pcCurrencyPlaceholder">请先选择收款国家/地区</option>
           </select>
         </div>
       </div>
       <div class="pc-row">
-        <div class="pc-label required">支付渠道</div>
+        <div class="pc-label required" data-i18n="channel">支付渠道</div>
         <div class="pc-ctrl">
           <div class="pc-ch-dropdown" id="pcChDropdown">
             <div class="pc-ch-trigger placeholder disabled" id="pcChTrigger" onclick="togglePcChDropdown(event)">
@@ -1979,7 +1987,7 @@
               <div id="pcChOpts">
                 <div class="pc-ch-opt" data-ch="payermax" onclick="selectPcChannel(this)">PayerMax</div>
                 <div class="pc-ch-opt" data-ch="paypal" onclick="selectPcChannel(this)">PayPal</div>
-                <div class="pc-ch-opt" data-ch="bank" onclick="selectPcChannel(this)">银行转账</div>
+                <div class="pc-ch-opt" data-ch="bank" onclick="selectPcChannel(this)" data-i18n="bankTransfer">银行转账</div>
               </div>
             </div>
           </div>
@@ -1989,7 +1997,7 @@
       <!-- PayerMax 字段 -->
       <div id="pcPayerMaxSection" style="display:none;">
         <div class="pc-row">
-          <div class="pc-label required">支付方式</div>
+          <div class="pc-label required" data-i18n="payMethod">支付方式</div>
           <div class="pc-ctrl">
             <select class="pc-select" id="pcPayerMaxMethod">
               <option value="Banktransfer">Banktransfer</option>
@@ -1997,69 +2005,66 @@
           </div>
         </div>
         <div class="pc-row">
-          <div class="pc-label required">收款姓名</div>
-          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcPmRecvName" placeholder="请输入"></div>
+          <div class="pc-label required" data-i18n="recvName">收款姓名</div>
+          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcPmRecvName" data-i18n-ph="inputPlz" placeholder="请输入"></div>
         </div>
       </div>
 
       <!-- PayPal 字段 -->
       <div id="pcPayPalSection" style="display:none;">
         <div class="pc-row">
-          <div class="pc-label required">收款姓名</div>
-          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcPpRecvName" placeholder="请输入"></div>
+          <div class="pc-label required" data-i18n="recvName">收款姓名</div>
+          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcPpRecvName" data-i18n-ph="inputPlz" placeholder="请输入"></div>
         </div>
         <div class="pc-row">
-          <div class="pc-label required">PayPal账号</div>
-          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcPpAccount" placeholder="请输入邮箱"></div>
+          <div class="pc-label required" data-i18n="ppAccount">PayPal账号</div>
+          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcPpAccount" data-i18n-ph="ppEmailPlz" placeholder="请输入邮箱"></div>
         </div>
       </div>
 
       <!-- 银行转账 字段 -->
       <div id="pcBankSection" style="display:none;">
         <div class="pc-row">
-          <div class="pc-label required">收款姓名</div>
-          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcBkRecvName" placeholder="请输入"></div>
+          <div class="pc-label required" data-i18n="recvName">收款姓名</div>
+          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcBkRecvName" data-i18n-ph="inputPlz" placeholder="请输入"></div>
         </div>
         <div class="pc-row">
-          <div class="pc-label required">收款账号</div>
+          <div class="pc-label required" data-i18n="acctNo">收款账号</div>
           <div class="pc-ctrl">
-            <input class="pc-input" type="text" id="pcBkAcctNo" placeholder="仅支持字母或数字" oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
+            <input class="pc-input" type="text" id="pcBkAcctNo" data-i18n-ph="acctNoPlz" placeholder="仅支持字母或数字" oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'')">
           </div>
         </div>
         <div class="pc-row">
-          <div class="pc-label required">Swiftcode代码</div>
+          <div class="pc-label required" data-i18n="swiftCode">Swiftcode代码</div>
           <div class="pc-ctrl">
-            <input class="pc-input" type="text" id="pcBkSwift" placeholder="8位或11位大写字母/数字"
+            <input class="pc-input" type="text" id="pcBkSwift" data-i18n-ph="swiftPlz" placeholder="8位或11位大写字母/数字"
               oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,''); onPcSwiftChange()">
-            <div class="pc-hint">仅支持大写字母或数字，长度为8位或11位，输入字母自动转大写</div>
+            <div class="pc-hint" id="pcSwiftHint" data-i18n="swiftHint">仅支持大写字母或数字，长度为8位或11位，输入字母自动转大写</div>
           </div>
         </div>
         <div class="pc-row">
-          <div class="pc-label required">收款银行名称</div>
+          <div class="pc-label required" data-i18n="bankName">收款银行名称</div>
           <div class="pc-ctrl">
-            <input class="pc-input" type="text" id="pcBkBankName" placeholder="仅支持填写字母" oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'')">
+            <input class="pc-input" type="text" id="pcBkBankName" data-i18n-ph="bankNamePlz" placeholder="仅支持填写字母" oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'')">
           </div>
         </div>
-        <!-- 手机号: 当Swiftcode第5-6位=TW时显示 -->
         <div class="pc-row" id="pcBkPhoneRow" style="display:none;">
-          <div class="pc-label required">手机号</div>
+          <div class="pc-label required" data-i18n="phone">手机号</div>
           <div class="pc-ctrl">
-            <input class="pc-input" type="text" id="pcBkPhone" placeholder="请输入手机号">
-            <div class="pc-hint">当Swiftcode第5-6位为TW时必填</div>
+            <input class="pc-input" type="text" id="pcBkPhone" data-i18n-ph="phonePlz" placeholder="请输入手机号">
+            <div class="pc-hint" id="pcPhoneHint" data-i18n="phoneHint">当Swiftcode第5-6位为TW时必填</div>
           </div>
         </div>
-        <!-- 收款银行地址: 当收款币种=CNY时显示 -->
         <div class="pc-row" id="pcBkAddrRow" style="display:none;">
-          <div class="pc-label required">收款银行地址</div>
-          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcBkAddr" placeholder="请输入"></div>
+          <div class="pc-label required" data-i18n="bankAddr">收款银行地址</div>
+          <div class="pc-ctrl"><input class="pc-input" type="text" id="pcBkAddr" data-i18n-ph="inputPlz" placeholder="请输入"></div>
         </div>
-        <!-- 银行账单 -->
         <div class="pc-row">
-          <div class="pc-label required">银行账单</div>
+          <div class="pc-label required" data-i18n="bankStmt">银行账单</div>
           <div class="pc-ctrl">
             <div class="pc-upload-box" onclick="document.getElementById('pcBkBillFile').click()">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 16V8m0 0l-3 3m3-3l3 3" stroke="#8f959e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="18" height="18" rx="3" stroke="#8f959e" stroke-width="1.5"/></svg>
-              <div class="pc-upload-hint">请上传包含收款账号和姓名的银行账单<br><span style="color:#c9cdd4;">支持 JPG、JPEG、PNG、PDF、DOC、DOCX，大小不超过 50MB</span></div>
+              <div class="pc-upload-hint"><span id="pcUploadMain" data-i18n="uploadHint">请上传包含收款账号和姓名的银行账单</span><br><span id="pcUploadSub" style="color:#c9cdd4;" data-i18n="uploadSub">支持 JPG、JPEG、PNG、PDF、DOC、DOCX，大小不超过 50MB</span></div>
             </div>
             <input type="file" id="pcBkBillFile" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" style="display:none;" onchange="onPcBillUpload(this)">
             <div id="pcBkBillPreview" style="display:none; margin-top:8px; font-size:12px; color:#3370ff;"></div>
@@ -2067,8 +2072,8 @@
         </div>
       </div>
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px; padding-top:16px; border-top:1px solid #e5e6eb;">
-        <button class="btn btn-default" onclick="goBackFromPayrollCard()">取消</button>
-        <button class="btn btn-primary" onclick="savePayrollCard()">保存</button>
+        <button class="btn btn-default" onclick="goBackFromPayrollCard()" data-i18n="cancel">取消</button>
+        <button class="btn btn-primary" onclick="savePayrollCard()" data-i18n="save">保存</button>
       </div>
     </div>
   </div>
@@ -2545,6 +2550,72 @@ document.addEventListener('click', function() {
 });
 
 // ===== 我的工资卡 =====
+var _pcLang = 'zh';
+var _pcI18n = {
+  zh: {
+    pageTitle:'我的工资卡', empInfo:'员工信息', empName:'员工姓名', contractType:'合同账户类型',
+    overseasAcct:'境外账户', payInfo:'收款信息', country:'国家/地区', currency:'收款币种',
+    channel:'支付渠道', payMethod:'支付方式', recvName:'收款姓名', acctNo:'收款账号',
+    swiftCode:'Swiftcode代码', bankName:'收款银行名称', phone:'手机号', bankAddr:'收款银行地址',
+    bankStmt:'银行账单', ppAccount:'PayPal账号', bankTransfer:'银行转账',
+    edit:'编辑', cancel:'取消', save:'保存',
+    selectPlz:'请选择', selectCountryFirst:'请先选择收款国家/地区',
+    inputPlz:'请输入', acctNoPlz:'仅支持字母或数字', swiftPlz:'8位或11位大写字母/数字',
+    bankNamePlz:'仅支持填写字母', phonePlz:'请输入手机号', ppEmailPlz:'请输入邮箱',
+    swiftHint:'仅支持大写字母或数字，长度为8位或11位，输入字母自动转大写',
+    phoneHint:'当Swiftcode第5-6位为TW时必填',
+    uploadHint:'请上传包含收款账号和姓名的银行账单',
+    uploadSub:'支持 JPG、JPEG、PNG、PDF、DOC、DOCX，大小不超过 50MB'
+  },
+  en: {
+    pageTitle:'My Payroll Card', empInfo:'Employee Information', empName:'Employee Name',
+    contractType:'Contract Account Type', overseasAcct:'Overseas Account',
+    payInfo:'Payment Information', country:'Country/Region', currency:'Payment Currency',
+    channel:'Payment Channel', payMethod:'Payment Method', recvName:'Recipient Name',
+    acctNo:'Account Number', swiftCode:'SWIFT Code', bankName:'Bank Name',
+    phone:'Phone Number', bankAddr:'Bank Address', bankStmt:'Bank Statement',
+    ppAccount:'PayPal Account', bankTransfer:'Bank Transfer',
+    edit:'Edit', cancel:'Cancel', save:'Save',
+    selectPlz:'Please select', selectCountryFirst:'Please select country/region first',
+    inputPlz:'Please enter', acctNoPlz:'Letters and numbers only',
+    swiftPlz:'8 or 11 uppercase letters/numbers',
+    bankNamePlz:'Letters only', phonePlz:'Enter phone number', ppEmailPlz:'Enter email',
+    swiftHint:'Uppercase letters or numbers only, 8 or 11 characters. Auto-capitalizes.',
+    phoneHint:'Required when SWIFT Code positions 5–6 are "TW"',
+    uploadHint:'Upload bank statement containing account number and name',
+    uploadSub:'Supports JPG, JPEG, PNG, PDF, DOC, DOCX. Max 50MB.'
+  }
+};
+function togglePcLang() {
+  _pcLang = _pcLang === 'zh' ? 'en' : 'zh';
+  document.getElementById('pcLangTrack').classList.toggle('on', _pcLang === 'en');
+  applyPcLang();
+}
+function applyPcLang() {
+  var t = _pcI18n[_pcLang];
+  // Page title
+  document.getElementById('pcPageTitle').textContent = t.pageTitle;
+  // data-i18n text content
+  document.querySelectorAll('#page-payroll-card [data-i18n]').forEach(function(el) {
+    el.textContent = t[el.dataset.i18n] || el.textContent;
+  });
+  // data-i18n-ph placeholders
+  document.querySelectorAll('#page-payroll-card [data-i18n-ph]').forEach(function(el) {
+    el.placeholder = t[el.dataset.i18nPh] || el.placeholder;
+  });
+  // currency disabled placeholder
+  var currSel = document.getElementById('pcCurrency');
+  if (currSel && currSel.disabled && currSel.options[0]) currSel.options[0].textContent = t.selectCountryFirst;
+  // channel trigger (only when not selected)
+  if (!_pcCurrentChannel) {
+    document.getElementById('pcChTriggerText').textContent = t.selectCountryFirst;
+  }
+  // re-render view mode if active
+  if (_pcSavedData && document.getElementById('pcViewMode').style.display !== 'none') {
+    showPcViewMode();
+  }
+}
+
 var _pcCountryCurrencyMap = {
   VN: ['VND'], PH: ['PHP'], RU: ['RUB'], BR: ['BRL'],
   TW: ['TWD'], CN: ['CNY'], CM: ['XAF'], GB: ['GBP'], SG: ['SGD']
@@ -2577,7 +2648,7 @@ function onPcCountryChange() {
   var currSel = document.getElementById('pcCurrency');
   currSel.innerHTML = '';
   if (!country) {
-    currSel.innerHTML = '<option value="">请先选择收款国家/地区</option>';
+    currSel.innerHTML = '<option value="">' + _pcI18n[_pcLang].selectCountryFirst + '</option>';
     currSel.disabled = true;
   } else {
     var currencies = _pcCountryCurrencyMap[country] || ['USD'];
@@ -2591,7 +2662,7 @@ function onPcCountryChange() {
     chTrigger.classList.add('disabled');
     // Reset channel selection
     _pcCurrentChannel = null;
-    document.getElementById('pcChTriggerText').textContent = '请先选择收款国家/地区';
+    document.getElementById('pcChTriggerText').textContent = _pcI18n[_pcLang].selectCountryFirst;
     chTrigger.classList.add('placeholder');
     document.getElementById('pcPayerMaxSection').style.display = 'none';
     document.getElementById('pcPayPalSection').style.display = 'none';
@@ -2695,29 +2766,31 @@ function savePayrollCard() {
 function showPcViewMode() {
   var d = _pcSavedData;
   if (!d) return;
+  var t = _pcI18n[_pcLang];
+  var chLabel = d.channel === 'bank' ? t.bankTransfer : (d.channel === 'payermax' ? 'PayerMax' : 'PayPal');
   var rows = [
-    ['国家/地区', d.country],
-    ['收款币种', d.currency],
-    ['支付渠道', d.channelLabel]
+    [t.country, d.country],
+    [t.currency, d.currency],
+    [t.channel, chLabel]
   ];
   if (d.channel === 'payermax') {
-    if (d.method) rows.push(['支付方式', d.method]);
-    if (d.recvName) rows.push(['收款姓名', d.recvName]);
+    if (d.method) rows.push([t.payMethod, d.method]);
+    if (d.recvName) rows.push([t.recvName, d.recvName]);
   } else if (d.channel === 'paypal') {
-    if (d.recvName) rows.push(['收款姓名', d.recvName]);
-    if (d.ppAccount) rows.push(['PayPal账号', d.ppAccount]);
+    if (d.recvName) rows.push([t.recvName, d.recvName]);
+    if (d.ppAccount) rows.push([t.ppAccount, d.ppAccount]);
   } else if (d.channel === 'bank') {
-    if (d.recvName) rows.push(['收款姓名', d.recvName]);
-    if (d.acctNo) rows.push(['收款账号', d.acctNo]);
-    if (d.swift) rows.push(['Swiftcode代码', d.swift]);
-    if (d.bankName) rows.push(['收款银行名称', d.bankName]);
-    if (d.phone) rows.push(['手机号', d.phone]);
-    if (d.addr) rows.push(['收款银行地址', d.addr]);
-    if (d.bill) rows.push(['银行账单', d.bill]);
+    if (d.recvName) rows.push([t.recvName, d.recvName]);
+    if (d.acctNo) rows.push([t.acctNo, d.acctNo]);
+    if (d.swift) rows.push([t.swiftCode, d.swift]);
+    if (d.bankName) rows.push([t.bankName, d.bankName]);
+    if (d.phone) rows.push([t.phone, d.phone]);
+    if (d.addr) rows.push([t.bankAddr, d.addr]);
+    if (d.bill) rows.push([t.bankStmt, d.bill]);
   }
-  var html = '<div class="pc-row"><div class="pc-label">员工姓名</div><div class="pc-ctrl"><div class="pc-readonly">孙燕安</div></div></div>' +
-    '<div class="pc-row"><div class="pc-label">合同账户类型</div><div class="pc-ctrl"><div class="pc-readonly">境外账户</div></div></div>' +
-    '<div class="pc-section-title" style="margin-top:20px;">收款信息</div>' +
+  var html = '<div class="pc-row"><div class="pc-label">' + t.empName + '</div><div class="pc-ctrl"><div class="pc-readonly">孙燕安</div></div></div>' +
+    '<div class="pc-row"><div class="pc-label">' + t.contractType + '</div><div class="pc-ctrl"><div class="pc-readonly">' + t.overseasAcct + '</div></div></div>' +
+    '<div class="pc-section-title" style="margin-top:20px;">' + t.payInfo + '</div>' +
     rows.map(function(r) {
       return '<div class="pc-row"><div class="pc-label">' + r[0] + '</div><div class="pc-ctrl"><div class="pc-readonly">' + (r[1] || '-') + '</div></div></div>';
     }).join('');
